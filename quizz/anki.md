@@ -1,6 +1,6 @@
 # Anki — Contexte IA pour création de cards
 
-> **MAJ** : 2026-02-25 | **Total** : 100 cards | **Decks** : 6 | **Modèles** : 3
+> **MAJ** : 2026-03-03 | **Total** : 116 cards | **Decks** : 7 | **Modèles** : 3
 >
 > Ce fichier sert de **mémoire** pour l'IA lors de la création/modification de cartes Anki.
 > Consulter AVANT de créer de nouvelles cards pour garantir cohérence et éviter les doublons.
@@ -111,15 +111,16 @@ em {
 
 ## 2. Structure des Decks
 
-| Deck                      | Cards   | Modèles utilisés                     |
-| ------------------------- | ------- | ------------------------------------ |
-| `Dev::01-JavaScript-Core` | 51      | Q/R (31) + Cloze (15) + Rev (5)      |
-| `Dev::02-React`           | 28      | Q/R (17) + Corrections (7) + Rev (4) |
-| `Dev::03-CSS-HTML`        | 8       | Q/R (8)                              |
-| `Dev::04-Tooling-Git`     | 6       | Q/R (6)                              |
-| `Dev::05-Backend-API`     | 0       | _(réservé Phase 11+)_                |
-| `Dev::06-Entretien`       | 7       | Q/R (7)                              |
-| **Total**                 | **100** |                                      |
+| Deck                      | Cards   | Modèles utilisés                           |
+| ------------------------- | ------- | ------------------------------------------ |
+| `Dev::01-JavaScript-Core` | 51      | Q/R (31) + Cloze (15) + Rev (5)            |
+| `Dev::02-React`           | 28      | Q/R (17) + Corrections (7) + Rev (4)       |
+| `Dev::03-CSS-HTML`        | 8       | Q/R (8)                                    |
+| `Dev::04-Tooling-Git`     | 6       | Q/R (6)                                    |
+| `Dev::05-Backend-API`     | 0       | _(réservé Phase 11+)_                      |
+| `Dev::06-Entretien`       | 7       | Q/R (7)                                    |
+| `Dev::07-LeetCode-Algo`   | 16      | Q/R (8) + Cloze (5) + Rev (1) + Output (2) |
+| **Total**                 | **116** |                                            |
 
 ---
 
@@ -249,8 +250,55 @@ em {
 - Piège référence/copie objet (spread shallow copy, structuredClone)
 - Piège setTimeout + closure + let (ordre d'exécution)
 - Promise.allSettled (exercice output)
-- Process de debugging (méthode systématique, DevTools)
-- Méthode STAR (structurer réponse entretien)
+- Process de debugging (méthode systématique, DevTools) (card en pause)
+- Méthode STAR (structurer réponse entretien) (card en pause)
+
+---
+
+### Dev::07-LeetCode-Algo (16 cards)
+
+> Deck créé pour accompagner NeetCode 150 (easy → medium). Concepts fondamentaux pour résoudre des problèmes d'algo.
+
+#### Big O (5 cards)
+
+- Q/R : Notation Big O — définition, 5 complexités courantes (O(1) à O(n²)), exemples visuels ⭐
+- Q/R : Comment déterminer la complexité Big O d'un code — règles pratiques, piège .includes() dans for ⭐⭐
+- Q/R Output : Contains Duplicate brute force O(n²) vs Set O(n) — comparaison ⭐⭐
+- Cloze : Complexités des opérations courantes (arr[i], includes, Set.has, push, sort)
+- Cloze : Classement des 5 complexités rapide → lente
+
+#### Hash Set / Map (5 cards)
+
+- Q/R : Hash Set — définition, hash function, JS Set API, vs Array.includes ⭐
+- Q/R : Frequency Map pattern — `freq.set(x, (freq.get(x) || 0) + 1)`, problèmes LeetCode ⭐⭐
+- Q/R Output : Map frequency counting exercise — freq.get(2)=2, freq.size=3 ⭐⭐
+- Cloze : Set pour existence vs Map pour clé-valeur/fréquence
+- Reversible : Frequency Map pattern (code ↔ concept)
+
+#### Boucles (4 cards)
+
+- Q/R : for classique vs for...of vs for...in — quand utiliser chaque ⭐
+- Q/R : Boucle for vs Array method (.map, .filter) — LeetCode vs React ⭐⭐
+- Cloze : for...of (valeurs array) vs for...in (clés objet) + piège for...in sur array
+- Reversible : Besoin de l'index → for classique
+
+#### Algo Thinking (2 cards)
+
+- Q/R : Approche Brute Force → Optimize — méthode 4 étapes, exemple Contains Duplicate ⭐⭐
+- Cloze : 4 étapes LeetCode (Comprendre → Brute Force → Bottleneck → Optimiser)
+
+#### Concepts à carder plus tard (NeetCode 150 progression)
+
+| Catégorie         | Quand              | Exemples de problèmes                          |
+| ----------------- | ------------------ | ---------------------------------------------- |
+| Two Pointers      | Après Arrays easy  | Valid Palindrome, Two Sum II, 3Sum             |
+| Sliding Window    | Après Two Pointers | Best Time to Buy/Sell Stock, Longest Substring |
+| Stack             | Après Sliding Win  | Valid Parentheses, Min Stack, Reverse Polish   |
+| Binary Search     | Après Stack        | Search in Rotated Array, Koko Eating Bananas   |
+| Linked List       | Après Binary Srch  | Reverse Linked List, Merge Two Lists           |
+| Trees / DFS / BFS | Après Linked List  | Max Depth, Level Order, Validate BST           |
+| Sorting           | Parallèle          | Merge Sort, Quick Sort, comparateurs custom    |
+| Recursion         | Parallèle          | Fibonacci, factorial, tree traversal           |
 
 ---
 
@@ -272,7 +320,9 @@ em {
 
 **Meta** : `fondamentaux`, `gotcha`, `cloze`, `reversible`, `performance`
 
-**Non utilisés (futures phases)** : `a11y`, `auth`, `backend`, `cicd`, `database`, `docker`, `env`, `error-boundary`, `lazy`, `middleware`, `nodejs`, `router`, `securite`, `SQL`, `testing`, `typescript`, `zustand`, `useId`, `useRef`
+**Algo / LeetCode** : `algo`, `big-o`, `complexite`, `hash-set`, `hash-map`, `data-structure`, `boucles`, `array-methods`, `methode`, `patterns`
+
+**Non utilisés (futures phases)** : `a11y`, `auth`, `backend`, `cicd`, `database`, `docker`, `env`, `error-boundary`, `lazy`, `middleware`, `nodejs`, `router`, `securite`, `SQL`, `testing`, `two-pointers`, `sliding-window`, `stack`, `binary-search`, `linked-list`, `trees`, `sorting`, `recursion`, `typescript`, `zustand`, `useId`, `useRef`
 
 ---
 
@@ -407,14 +457,15 @@ mcp_anki-mcp_createModel(modelName, inOrderFields, css, isCloze, cardTemplates)
 
 > Synchronisé avec `copilot-instructions.md`
 
-| Phase | Status  | Cards attendues                                          |
-| ----- | ------- | -------------------------------------------------------- |
-| 0-9   | ✅ Done | JS, React, CSS, Tooling, Entretien — **100 cards**       |
-| 10A   | 🔜 Next | TypeScript, Zod, React Hook Form                         |
-| 10B   | À venir | Vitest, React Router, Git avancé, SQL théorique          |
-| 11    | À venir | Backend (Hono, HTTP, REST, CORS) → deck `05-Backend-API` |
-| 12    | À venir | Database (PostgreSQL, Drizzle, Docker)                   |
-| 13+   | À venir | Auth, Deploy, Testing, IA...                             |
+| Phase    | Status      | Cards attendues                                          |
+| -------- | ----------- | -------------------------------------------------------- |
+| 0-9      | ✅ Done     | JS, React, CSS, Tooling, Entretien — **100 cards**       |
+| LeetCode | 🔄 En cours | Algo fondamentaux (NeetCode 150) — **16 cards**          |
+| 10A      | 🔜 Next     | TypeScript, Zod, React Hook Form                         |
+| 10B      | À venir     | Vitest, React Router, Git avancé, SQL théorique          |
+| 11       | À venir     | Backend (Hono, HTTP, REST, CORS) → deck `05-Backend-API` |
+| 12       | À venir     | Database (PostgreSQL, Drizzle, Docker)                   |
+| 13+      | À venir     | Auth, Deploy, Testing, IA...                             |
 
 ### Quand ajouter des cards ?
 
@@ -424,4 +475,4 @@ mcp_anki-mcp_createModel(modelName, inOrderFields, css, isCloze, cardTemplates)
 
 ---
 
-_Dernière vérification complète : 2026-02-25 (audit + corrections P1-P4)_
+_Dernière vérification complète : 2026-03-03 (ajout deck LeetCode-Algo 16 cards)_
