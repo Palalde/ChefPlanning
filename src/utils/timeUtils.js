@@ -44,6 +44,14 @@ export function timeToMinutes(time) {
 
 const NOON = 12 * 60; // midi en minutes = 720
 
+/**
+ * Calcule les heures totales, matin et après-midi pour un employé donné
+ * @param {string} employeeId - ID de l'employé
+ * @param {Array} assignments - Liste des assignations { employeeId, shiftId }
+ * @param {Array} shifts - Liste des shifts { id, startTime, endTime, type, breakStart?, breakEnd? }
+ * @returns {{ total: number, am: number, pm: number }} - Heures totales, matin et après-midi en minutes
+ */
+
 export function getEmployeeHours(employeeId, assignments, shifts) {
   // Filtrer les assignations de cet employé
   const employeeAssignments = assignments.filter(
