@@ -1,6 +1,6 @@
 # Anki — Contexte IA pour création de cards
 
-> **MAJ** : 2026-03-07 | **Total** : 121 cards | **Decks** : 7 | **Modèles** : 3
+> **MAJ** : 2026-03-09 | **Total** : 123 cards | **Decks** : 7 | **Modèles** : 3
 >
 > Ce fichier sert de **mémoire** pour l'IA lors de la création/modification de cartes Anki.
 > Consulter AVANT de créer de nouvelles cards pour garantir cohérence et éviter les doublons.
@@ -119,8 +119,8 @@ em {
 | `Dev::04-Tooling-Git`     | 6       | Q/R (6)                                     |
 | `Dev::05-Backend-API`     | 0       | _(réservé Phase 11+)_                       |
 | `Dev::06-Entretien`       | 7       | Q/R (7)                                     |
-| `Dev::07-LeetCode-Algo`   | 21      | Q/R (11) + Cloze (7) + Rev (1) + Output (2) |
-| **Total**                 | **121** |                                             |
+| `Dev::07-LeetCode-Algo`   | 23      | Q/R (13) + Cloze (7) + Rev (1) + Output (2) |
+| **Total**                 | **123** |                                             |
 
 ---
 
@@ -292,6 +292,11 @@ em {
 #### Read/Write Pointer (1 card)
 
 - Q/R : Read/Write Pointer pattern — reader (i) avance toujours, writer (k) avance si condition, in-place O(n) O(1) ⭐⭐
+
+#### Frequency Array / Hashable Key (2 cards)
+
+- Q/R : Frequency Array pattern — Array(26).fill(0), charCodeAt(0)-97, tableau ordonné/stable, convertible en clé hashable ⭐⭐
+- Q/R : Hashable Key en JS — .join('#') pour arrays, JSON.stringify() pour objets, car JS compare par référence ⭐⭐
 
 #### Algo Thinking (2 cards)
 
@@ -486,4 +491,4 @@ mcp_anki-mcp_createModel(modelName, inOrderFields, css, isCloze, cardTemplates)
 
 ---
 
-_Dernière vérification complète : 2026-03-07 (ajout Read/Write Pointer après Remove Element)_
+_Dernière vérification complète : 2026-03-09 (ajout Frequency Array + Hashable Key après Group Anagrams)_

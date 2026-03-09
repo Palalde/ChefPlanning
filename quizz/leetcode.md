@@ -1,269 +1,333 @@
-Given an integer array nums and an integer val, remove all occurrences of val in nums in-place. The order of the elements may be changed. Then return the number of elements in nums which are not equal to val.
-
-Consider the number of elements in nums which are not equal to val be k, to get accepted, you need to do the following things:
-
-Change the array nums such that the first k elements of nums contain the elements which are not equal to val. The remaining elements of nums are not important as well as the size of nums.
-Return k.
-Custom Judge:
-
-The judge will test your solution with the following code:
-
-int[] nums = [...]; // Input array
-int val = ...; // Value to remove
-int[] expectedNums = [...]; // The expected answer with correct length.
-// It is sorted with no values equaling val.
-
-int k = removeElement(nums, val); // Calls your implementation
-
-assert k == expectedNums.length;
-sort(nums, 0, k); // Sort the first k elements of nums
-for (int i = 0; i < actualLength; i++) {
-assert nums[i] == expectedNums[i];
-}
-If all assertions pass, then your solution will be accepted.
+Given an array of strings strs, group the anagrams together. You can return the answer in any order.
 
 Example 1:
 
-Input: nums = [3,2,2,3], val = 3
-Output: 2, nums = [2,2,_,_]
-Explanation: Your function should return k = 2, with the first two elements of nums being 2.
-It does not matter what you leave beyond the returned k (hence they are underscores).
+Input: strs = ["eat","tea","tan","ate","nat","bat"]
+
+Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
+
+Explanation:
+
+There is no string in strs that can be rearranged to form "bat".
+The strings "nat" and "tan" are anagrams as they can be rearranged to form each other.
+The strings "ate", "eat", and "tea" are anagrams as they can be rearranged to form each other.
 Example 2:
 
-Input: nums = [0,1,2,2,3,0,4,2], val = 2
-Output: 5, nums = [0,1,4,0,3,_,_,_]
-Explanation: Your function should return k = 5, with the first five elements of nums containing 0, 0, 1, 3, and 4.
-Note that the five elements can be returned in any order.
-It does not matter what you leave beyond the returned k (hence they are underscores).
+Input: strs = [""]
+
+Output: [[""]]
+
+Example 3:
+
+Input: strs = ["a"]
+
+Output: [["a"]]
 
 Constraints:
 
-0 <= nums.length <= 100
-0 <= nums[i] <= 50
-0 <= val <= 100
+1 <= strs.length <= 104
+0 <= strs[i].length <= 100
+strs[i] consists of lowercase English letters.
 
 ```javaScript
-// solution 1 :
-
+// solution 1
 /**
- * @param {number[]} nums
- * @param {number} val
- * @return {number}
+ * @param {string[]} strs
+ * @return {string[][]}
  */
-var removeElement = function (nums, val) {
+var groupAnagrams = function (strs) {
+    // const
+    const result = [];
+    const charSumMap = new Map();
+    let charSum = 0;
 
-    // definir les curseurs
-    let i = 0;
-    let j = nums.length - 1;
+    // for each word
+    for (const word of strs) {
+        // reset charSum
+        charSum = 0;
+        // for each char of word
+        for (const char of word) {
+            // define the sum of each letter
+            charSum += char.charCodeAt(0);
+        }
 
-    // tant que les curseurs ne sont pas au même endroit
-    while (j > i) {
-
-        if (nums[i] === val) {
-            nums.splice(i, 1);
-        } else { i++ }
-
-        if (nums[j] === val) {
-            nums.splice(j, 1);
-        } else { j-- }
+        // if key already is charSum
+        if (charSumMap.has(charSum)) {
+            // then push the actual word
+            charSumMap.get(charSum).push(word);
+        } else {
+            // if not create a new key with the word
+            charSumMap.set(charSum, [word]);
+        }
     }
 
-    return nums.length
+    // for each key of the map
+    for (const [key, value] of charSumMap) {
+        result.push(value);
+    }
+
+    return result;
 };
 
-// solution 2 :
-
+// solution 2
 /**
- * @param {number[]} nums
- * @param {number} val
- * @return {number}
+ * @param {string[]} strs
+ * @return {string[][]}
  */
-var removeElement = function (nums, val) {
+var groupAnagrams = function (strs) {
+    // const
+    const result = [];
+    let aStrs = strs;
 
-    // definir les curseurs
-    let i = 0;
-    let j = nums.length - 1;
+    // while there is word on the actual string
+    while (aStrs.length > 0) {
+        // true and false stack
+        let aTStack = [];
+        let aFStack = [];
+        // first word Map
+        let fwMap = new Map();
+        for (const word of aStrs) {
+            // actual word map
+            let wMap = new Map();
 
-    // tant que les curseurs ne sont pas au même endroit
-    while (j >= i) {
+            for (const char of word) {
+                // setup first refMap for first word
+                if (word === aStrs[0]) {
+                    fwMap.set(char, (fwMap.get(char) || 0) + 1);
+                }
+                // setup for other word
+                wMap.set(char, (wMap.get(char) || 0) + 1);
+            }
 
-        if (nums[i] === val) {
-            nums.splice(i, 1);
-        } else { i++ }
+            // firstword
+            if (word === aStrs[0]) {
+                // push the word in the actual true stack
+                aTStack.push(word);
 
-        if (nums[j] === val) {
-            nums.splice(j, 1);
-        } else { j-- }
+                // otherword
+            } else if (wMap.size !== fwMap.size) {
+                // if different length push in false Stack
+                aFStack.push(word);
+            } else {
+                // flag to check if the for made to the end
+                let failled = false;
+                // check if anagram with the fword
+                for (const [c, value] of fwMap) {
+                    if (wMap.get(c) !== value) {
+                        aFStack.push(word);
+                        failled = true;
+                        break;
+                    }
+                }
+                // if failled there is anagram
+                if (!failled) {
+                    // so push in the actual true stack
+                    aTStack.push(word);
+                }
+            }
+        }
+
+        //push both stack
+        result.push(aTStack);
+        aStrs = aFStack;
     }
 
-    return nums.length
+    return result;
 };
 
-// solution 3
+//solution 3
 
 /**
- * @param {number[]} nums
- * @param {number} val
- * @return {number}
+ * @param {string[]} strs
+ * @return {string[][]}
  */
-var removeElement = function (nums, val) {
-    // compteur
-    let k = []
-    // definir les curseurs
-    let i = 0;
-    let j = nums.length - 1;
+var groupAnagrams = function (strs) {
+    // const
+    const result = [];
+    //hashMap result
+    let rMap = new Map();
+    //checkMap
+    let cMap = new Map();
 
-    // tant que les curseurs ne sont pas au même endroit
-    while (i <= j) {
+    for (const word of strs) {
+        //letterMap
+        let lMap = new Map();
 
-        if (nums[i] === val) {
-            i++;
-        } else { k.push(nums[i]); i++; }
+        for (const char of word) {
+            //set the actual letter map
+            lMap.set(char, (lMap.get(char) || 0) + 1);
+        }
 
-        if (nums[j] === val) {
-            j--;
-        } else { k.push(nums[j]); j--; }
+        for (const [w, inner] of cMap) {
+            let failed = false;
+            for (const [char, count] of inner) {
+                if (lmap.get(char) !== count) {
+                    failed = true;
+                    cMap.set(word, lMap);
+                    break;
+                }
+            }
+
+            if (!failed) {
+
+
+            }
+        }
+
     }
 
-    for (let l = 0; l < k.length; l++) {
-        nums[l] = k[l]
-    }
-
-    return k.length
 };
 
 // solution 4
 
 /**
- * @param {number[]} nums
- * @param {number} val
- * @return {number}
+ * @param {string[]} strs
+ * @return {string[][]}
  */
-var removeElement = function (nums, val) {
-    // compteur
-    let k = []
-    // definir les curseurs
-    let i = 0;
-    let j = nums.length - 1;
+var groupAnagrams = function (strs) {
+    //hashMap result
+    let rMap = new Map();
 
-    // tant que les curseurs ne sont pas au même endroit
-    while (i <= j) {
+    //create the hashMap result
+    for (const word of strs) {
+        //letterfreq
+        let lFreq = Array(26).fill(0);
 
-        if (nums[i] === val) {
-            i++;
+        for (const char of word) {
+            lFreq[char.charCodeAt(0) - 97]++;
+        }
+
+        // create the key with # join
+        const freqKey = lFreq.join('#');
+
+        // if there is one anagram in the map push it
+        if (rMap.has(freqKey)) {
+            rMap.get(freqKey).push(word);
         } else {
-            k.push(nums[i]);
-            i++;
-        }
-
-        if (i > j) break;
-
-        if (nums[j] === val) {
-            j--;
-        } else {
-            k.push(nums[j]);
-            j--;
+            // if not create a new one
+            rMap.set(freqKey, [word]);
         }
     }
 
-    for (let l = 0; l < k.length; l++) {
-        nums[l] = k[l]
-    }
-
-    return k.length
-};
-
-// solution 5 :
-
-/**
- * @param {number[]} nums
- * @param {number} val
- * @return {number}
- */
-var removeElement = function (nums, val) {
-    // tableau
-    let k = []
-
-    // mettre dans le tableau les valeurs !val
-    for (const num of nums) {
-        if (num !== val) {
-            k.push(num);
-        }
-    }
-
-    // changer num avec les valeurs du tableau
-    for (let i = 0; i < nums.length; i++) {
-        nums[i] = k[i];
-    }
-
-    // // optionnel enlever le reste du tableau
-    // while (nums.length > k.length) {
-    //     nums.pop();
-    // }
-
-    return k.length
-};
-
-// solution 6:
-
-/**
- * @param {number[]} nums
- * @param {number} val
- * @return {number}
- */
-var removeElement = function (nums, val) {
-    // pointeur
-    let k = 0
-
-    // boucle dans la liste
-    for (let i = 0; i < nums.length; i++) {
-        // si different de la valeur
-        if (nums[i] !== val) {
-            //changer par la valeur du pointeur
-            nums[k] = nums[i];
-            // avancer le pointeur
-            k++;
-        }
-        // si nums[i] === val alors laissé le pointeur a sa place
-    }
-
-    return k
-};
-
-// solution 7:
-/**
- * @param {number[]} nums
- * @param {number} val
- * @return {number}
- */
-var removeElement = function (nums, val) {
-
-    // pointeur a la fin
-    let n = nums.length;
-
-    // version boucle for
-    // for (let i = 0; i < n; i++) {
-    //     if (nums[i] === val) {
-    //         nums[i] = nums[n - 1];
-    //         n--;
-    //         nums.pop();
-    //         i--;
-    //     }
-    // }
-
-    //index pour while
-    let i = 0
-
-    while (i < n) {
-        if (nums[i] !== val) {
-            i++;
-        } else if ( nums[i] === val ) {
-            nums[i] = nums[n - 1];
-            n--;
-        }
-    }
-
-    return n
+    return [...rMap.values()];
 };
 
 ```
+
+---
+
+## **Résumé de la conversation – Résolution de `groupAnagrams`**
+
+### **1. Blocages initiaux**
+
+1. **Map avec des tableaux comme valeurs**
+   - Tu voulais stocker des tableaux de mots comme valeurs dans une Map (`Map<clé, [mots]>`).
+   - Tu étais confus sur la syntaxe et la logique pour ajouter un mot à un tableau existant ou en créer un nouveau.
+
+2. **Calcul d’un `charSum` pour identifier les anagrammes**
+   - Tu essayais d’utiliser la somme des codes caractères (`charCodeAt`) pour identifier les anagrammes.
+   - Problème : plusieurs mots non-anagrammes peuvent donner la même somme → logique incorrecte.
+   - Tu as compris que ça ne marche pas pour garantir l’unicité.
+
+3. **Boucles imbriquées et `break` / `return`**
+   - Tu voulais interrompre certaines boucles mais continuer d’autres.
+   - Confusion sur la portée de `break` et `return`.
+   - Tu as appris la différence entre :
+     - `break` → quitte la boucle courante
+     - `return` → quitte toute la fonction
+     - `label: break label` → peut quitter une boucle externe mais il faut faire attention
+
+4. **Comparaison de Maps et objets**
+   - Tu voulais comparer des Maps `{a:2,b:1}` pour savoir si elles étaient identiques.
+   - Problème : `Map` ou objet en JS se compare par **référence**, pas par valeur.
+   - Tu as appris qu’il faut :
+     - Convertir en string (`JSON.stringify([...map])`)
+     - Ou faire une comparaison manuelle clé par clé
+
+5. **Problème avec Map + `JSON.stringify([...map])`**
+   - Tu as réalisé que l’ordre des clés dans une Map influence le string → `"eat"` et `"tea"` donnaient des clés différentes.
+   - Solution envisagée : soit trier les clés, soit utiliser une Map initialisée avec toutes les lettres dans l’ordre fixe.
+
+6. **Performance / Complexité**
+   - Tes premières solutions avec boucle imbriquée donnaient **O(n²)** → Time Limit Exceeded sur LeetCode.
+   - Tu as compris qu’il fallait une approche **O(n·k)** (n = nombre de mots, k = longueur moyenne des mots).
+
+---
+
+### **2. Ce que tu as appris et intégré**
+
+1. **Tableau de fréquences plutôt que Map**
+   - Pour `'a'..'z'`, tu peux faire :
+
+     ```javascript
+     let freq = Array(26).fill(0);
+     for (const char of word) freq[char.charCodeAt(0) - 97]++;
+     const key = freq.join("#");
+     ```
+
+   - Avantages :
+     - Complexité O(n·k)
+     - Clé stable
+     - Plus simple et léger qu’une Map ou un tri
+
+2. **Comparaison d’objets / Map**
+   - `JSON.stringify([...map])` permet de comparer des Maps par valeur, mais l’ordre compte.
+   - Si ordre garanti (comme tableau de fréquence), plus besoin de `.sort()`.
+
+3. **Map comme structure pour grouper les anagrammes**
+   - Clé : fréquence des lettres ou string triée
+   - Valeur : tableau des mots correspondants
+   - Ajout conditionnel :
+
+     ```javascript
+     if (map.has(key)) map.get(key).push(word);
+     else map.set(key, [word]);
+     ```
+
+4. **Optimisation finale**
+   - Supprimer les variables inutilisées (`lString`, `result`)
+   - Retourner directement `return [...rMap.values()]`
+   - Pas besoin de boucle supplémentaire pour remplir un tableau intermédiaire
+
+---
+
+### **3. Points forts de ton apprentissage**
+
+- Compréhension de **Map + tableau comme valeur** pour regrouper des éléments.
+- Différence entre `break` et `return` et utilisation correcte dans des boucles imbriquées.
+- Limites des méthodes basées sur `charCode` pour les anagrammes.
+- Avantages des **tableaux de fréquences** vs `.sort()` : complexité O(n·k) vs O(n·k log k).
+- Conversion d’objets/Maps en string pour comparaison par valeur.
+- Nettoyage du code : supprimer variables inutilisées, simplifier le retour.
+
+---
+
+### **4. Résultat final**
+
+- Une solution propre, efficace, O(n·k), utilisant un tableau de fréquences pour `'a'..'z'` et une Map pour grouper les mots :
+
+```javascript
+const rMap = new Map();
+for (const word of strs) {
+  const freq = Array(26).fill(0);
+  for (const char of word) freq[char.charCodeAt(0) - 97]++;
+  const key = freq.join("#");
+  if (!rMap.has(key)) rMap.set(key, []);
+  rMap.get(key).push(word);
+}
+return [...rMap.values()];
+```
+
+- Clé stable, pas besoin de `.sort()`, très rapide pour de grandes entrées.
+
+---
+
+### **5. Comment tu t’es servi de l’IA**
+
+- Vérification de syntaxe et logique (Map, boucle, break/return).
+- Explication de la limite de `charCodeAt` pour un charSum.
+- Comparaison Map / objet par valeur vs référence.
+- Simplification et optimisation du code (tableau de fréquence, suppression de variables inutilisées).
+- Confirmation de la complexité et recommandations pour O(n·k) plutôt que O(n·k log k).
+
+---
