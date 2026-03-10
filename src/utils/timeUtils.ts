@@ -1,9 +1,8 @@
-/**
- * Convertit des minutes totales en heures et minutes
- * @param {number} totalMinutes - Minutes totales (ex: 2145)
- * @returns {{ hours: number, minutes: number }} - Objet { hours: 35, minutes: 45 }
- */
-export function minutesToHoursMinutes(totalMinutes) {
+//Convertit des minutes totales en heures et minutes
+export function minutesToHoursMinutes(totalMinutes: number): {
+  hours: number;
+  minutes: number;
+} {
   const hours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
   return { hours, minutes };
