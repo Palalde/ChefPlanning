@@ -8,22 +8,13 @@ export function minutesToHoursMinutes(totalMinutes: number): {
   return { hours, minutes };
 }
 
-/**
- * Convertit des heures et minutes en minutes totales
- * @param {number} hours - Heures (ex: 35)
- * @param {number} minutes - Minutes (ex: 45)
- * @returns {number} - Minutes totales (ex: 2145)
- */
-export function hoursMinutesToMinutes(hours, minutes) {
+// Convertit des heures et minutes en minutes totales
+export function hoursMinutesToMinutes(hours: number, minutes: number): number {
   return hours * 60 + minutes;
 }
 
-/**
- * Formate des minutes totales en string lisible "35h45" ou "35h"
- * @param {number} totalMinutes - Minutes totales (ex: 2145)
- * @returns {string} - Format "35h45" ou "35h" (si minutes = 0)
- */
-export function formatMinutesToDisplay(totalMinutes) {
+// Formate des minutes totales en string lisible "35h45" ou "35h"
+export function formatMinutesToDisplay(totalMinutes: number): string {
   const { hours, minutes } = minutesToHoursMinutes(totalMinutes);
   if (minutes === 0) {
     return `${hours}h`;
@@ -31,27 +22,27 @@ export function formatMinutesToDisplay(totalMinutes) {
   return `${hours}h${minutes.toString().padStart(2, "0")}`;
 }
 
-/**
- * Convertit un horaire "HH:MM" en minutes depuis minuit
- * @param {string} time - Horaire au format "HH:MM" (ex: "09:00")
- * @returns {number} - Minutes depuis minuit (ex: 540)
- */
-export function timeToMinutes(time) {
+//Convertit un horaire "HH:MM" en minutes depuis minuit
+export function timeToMinutes(time: string): number {
   const [h, m] = time.split(":").map(Number);
   return h * 60 + m;
 }
 
 const NOON = 12 * 60; // midi en minutes = 720
 
-/**
- * Calcule les heures totales, matin et après-midi pour un employé donné
- * @param {string} employeeId - ID de l'employé
- * @param {Array} assignments - Liste des assignations { employeeId, shiftId }
- * @param {Array} shifts - Liste des shifts { id, startTime, endTime, type, breakStart?, breakEnd? }
- * @returns {{ total: number, am: number, pm: number }} - Heures totales, matin et après-midi en minutes
- */
-
-export function getEmployeeHours(employeeId, assignments, shifts) {
+// Calcule les heures totales, matin et après-midi pour un employé donné
+export function getEmployeeHours(
+  employeeId: string,
+  assignments: { employeeId: string; shiftId: string }[],
+  shifts: {
+    id: string;
+    startTime: string;
+    endTime: string;
+    type: "am" | "pm" | "full" | "split";
+    breakStart?: string;
+    breakEnd?: string;
+  }[],
+): { total: number; am: number; pm: number } {
   // Filtrer les assignations de cet employé
   const employeeAssignments = assignments.filter(
     (a) => a.employeeId === employeeId,
@@ -85,8 +76,8 @@ export function getEmployeeHours(employeeId, assignments, shifts) {
         acc.pm += end - NOON;
       } else if (shift.type === "split") {
         // Shift coupé → AM = start→breakStart, PM = breakEnd→end
-        const breakStart = timeToMinutes(shift.breakStart);
-        const breakEnd = timeToMinutes(shift.breakEnd);
+        const breakStart = timeToMinutes(shift.breakStart!);
+        const breakEnd = timeToMinutes(shift.breakEnd!);
         const amMinutes = breakStart - start;
         const pmMinutes = end - breakEnd;
         acc.total += amMinutes + pmMinutes;
