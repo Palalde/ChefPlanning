@@ -1,7 +1,7 @@
-// type: "am" = matin | "pm" = après-midi | "full" = journée | "split" = coupé
+import { Shift } from "@/types";
 // hours et colorClass sont dérivés (calculés à la volée via utils)
 // breakStart/breakEnd uniquement si type === "split"
-export const DEFAULT_SHIFTS = [
+export const DEFAULT_SHIFTS: Shift[] = [
   {
     id: "matin",
     name: "Matin",
