@@ -1,3 +1,5 @@
+import { Shift, Assignment } from "@/types";
+
 //Convertit des minutes totales en heures et minutes
 export function minutesToHoursMinutes(totalMinutes: number): {
   hours: number;
@@ -33,15 +35,8 @@ const NOON = 12 * 60; // midi en minutes = 720
 // Calcule les heures totales, matin et après-midi pour un employé donné
 export function getEmployeeHours(
   employeeId: string,
-  assignments: { employeeId: string; shiftId: string }[],
-  shifts: {
-    id: string;
-    startTime: string;
-    endTime: string;
-    type: "am" | "pm" | "full" | "split";
-    breakStart?: string;
-    breakEnd?: string;
-  }[],
+  assignments: Assignment[],
+  shifts: Shift[],
 ): { total: number; am: number; pm: number } {
   // variables
   const shiftMap = new Map(shifts.map((s) => [s.id, s]));
@@ -74,8 +69,6 @@ export function getEmployeeHours(
       am = NOON - start;
       pm = end - NOON;
     } else if (shift.type === "split") {
-      // guard
-      if (!shift.breakStart || !shift.breakEnd) continue;
       // calcul en tenant compte de la pause
       am = timeToMinutes(shift.breakStart) - start;
       pm = end - timeToMinutes(shift.breakEnd);
