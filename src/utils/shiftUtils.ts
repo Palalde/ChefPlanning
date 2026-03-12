@@ -9,7 +9,7 @@ type ShiftMeta = {
   order: number;
 };
 
-export type ShiftGroup = ShiftMeta & {
+type ShiftGroup = ShiftMeta & {
   type: ShiftType;
   shifts: Shift[];
 };
