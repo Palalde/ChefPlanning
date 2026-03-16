@@ -1,353 +1,138 @@
-Design a HashMap without using any built-in hash table libraries.
+Given the array nums, for each nums[i] find out how many numbers in the array are smaller than it. That is, for each nums[i] you have to count the number of valid j's such that j != i and nums[j] < nums[i].
 
-Implement the MyHashMap class:
-
-MyHashMap() initializes the object with an empty map.
-void put(int key, int value) inserts a (key, value) pair into the HashMap. If the key already exists in the map, update the corresponding value.
-int get(int key) returns the value to which the specified key is mapped, or -1 if this map contains no mapping for the key.
-void remove(key) removes the key and its corresponding value if the map contains the mapping for the key.
+Return the answer in an array.
 
 Example 1:
 
-Input
-["MyHashMap", "put", "put", "get", "get", "put", "get", "remove", "get"]
-[[], [1, 1], [2, 2], [1], [3], [2, 1], [2], [2], [2]]
-Output
-[null, null, null, 1, -1, null, 1, null, -1]
+Input: nums = [8,1,2,2,3]
+Output: [4,0,1,1,3]
+Explanation:
+For nums[0]=8 there exist four smaller numbers than it (1, 2, 2 and 3).
+For nums[1]=1 does not exist any smaller number than it.
+For nums[2]=2 there exist one smaller number than it (1).
+For nums[3]=2 there exist one smaller number than it (1).
+For nums[4]=3 there exist three smaller numbers than it (1, 2 and 2).
+Example 2:
 
-Explanation
-MyHashMap myHashMap = new MyHashMap();
-myHashMap.put(1, 1); // The map is now [[1,1]]
-myHashMap.put(2, 2); // The map is now [[1,1], [2,2]]
-myHashMap.get(1); // return 1, The map is now [[1,1], [2,2]]
-myHashMap.get(3); // return -1 (i.e., not found), The map is now [[1,1], [2,2]]
-myHashMap.put(2, 1); // The map is now [[1,1], [2,1]] (i.e., update the existing value)
-myHashMap.get(2); // return 1, The map is now [[1,1], [2,1]]
-myHashMap.remove(2); // remove the mapping for 2, The map is now [[1,1]]
-myHashMap.get(2); // return -1 (i.e., not found), The map is now [[1,1]]
+Input: nums = [6,5,4,8]
+Output: [2,1,0,3]
+Example 3:
+
+Input: nums = [7,7,7,7]
+Output: [0,0,0,0]
 
 Constraints:
 
-0 <= key, value <= 106
-At most 104 calls will be made to put, get, and remove.
+2 <= nums.length <= 500
+0 <= nums[i] <= 100
 
 ```javaScript
 // solution 1:
 
+/**
+ * @param {number[]} nums
+ * @return {number[]}
+ */
+var smallerNumbersThanCurrent = function (nums) {
 
-class MyHashMap {
-    //private
-    #map;
+    let result = Array.from({ length: nums.length }, () => 0);
 
-    constructor() {
-        this.#map = Array.from({length: 1009}, () => []);
-    };
 
-    #hash(key) {
-        return key % this.#map.length;
-    };
+    let j = 0;
+    // nums minus the previous first number of the array for each loop
+    while (j < nums.length - 1) {
 
-    put(key, value) {
-        const index = this.#hash(key);
-        const bucket = this.#map[index];
+        //start with the second number
+        for (let i = j + 1; i < nums.length; i++) {
 
-        if (bucket[key] !== value) {
-            this.#map[index][key] = value;
+            //check with the first number of the loop
+            if (nums[j] === nums[i]) {
+                continue;
+            }
+
+            if (nums[j] > nums[i]) {
+                result[j]++;
+            } else {
+                result[i]++;
+            }
+
         }
-
-        return;
-    };
-
-    get(key) {
-        const bucket = this.#map[this.#hash(key)];
-
-        if(bucket[key] === undefined) {
-            return -1;
-        }
-
-        return bucket[key];
-    };
-
-    remove(key) {
-        const bucket = this.#map[this.#hash(key)];
-
-        if (bucket[key]) {
-            bucket[key] = undefined;
-        }
-
-        return;
+        //next number
+        j++;
     }
+    return result;
 };
+
 
 // solution 2 :
 
-class MyHashMap {
-    //private
-    #map;
+/**
+ * @param {number[]} nums
+ * @return {number[]}
+ */
+var smallerNumbersThanCurrent = function (nums) {
 
-    constructor() {
-        this.#map = Array.from({length: 1009}, () => ({}));
-    };
+    let count = Array.from({ length: Math.max(...nums) + 1 }, () => 0);
+    let iMap = new Map();
 
-    #hash(key) {
-        return key % this.#map.length;
-    };
+    let result = Array.from({ length: nums.length }, () => 0);
 
-    put(key, value) {
-        this.#map[this.#hash(key)][key] = value;
-    };
+    //count freq
+    for (let i = 0; i < nums.length; i++) {
+        count[nums[i]]++;
 
-    get(key) {
-        const bucket = this.#map[this.#hash(key)];
-
-        return bucket[key] !== undefined ? bucket[key] : -1;
-    };
-
-    remove(key) {
-        const bucket = this.#map[this.#hash(key)];
-
-        delete bucket[key];
+        if (!iMap.has(nums[i])) {
+            iMap.set(nums[i], [i]);
+        } else {
+            iMap.get(nums[i]).push(i);
+        }
     }
+
+    //count acc
+    let acc = 0;
+    for (let j = 0; j < count.length; j++) {
+
+        if (count[j]) {
+            // update result and loop if multiple number
+            for (let idx of iMap.get(j)) {
+                result[idx] += acc;
+            }
+        }
+
+        acc += count[j];
+    }
+
+    return result;
+
 };
 // solution 3:
 
+/**
+ * @param {number[]} nums
+ * @return {number[]}
+ */
+var smallerNumbersThanCurrent = function (nums) {
 
-class MyHashMap {
-    //private
-    #map;
+    let count = Array.from({ length: Math.max(...nums) + 1 }, () => 0);
 
-    constructor() {
-        this.#map = {};
-    };
-
-    // #hash(key) {
-    //     return key % this.#map.length;
-    // };
-
-    put(key, value) {
-        this.#map[key] = value;
-    };
-
-    get(key) {
-        return this.#map[key] !== undefined ? this.#map[key] : -1;
-    };
-
-    remove(key) {
-        delete this.#map[key];
+    //count freq
+    for (const num of nums) {
+        count[num]++;
     }
-};
 
-// solution 4:
-class Node {
-    constructor(key, value) {
-        this.key = key;
-        this.value = value;
-        this.next = null;
-    }
-}
+    //count acc
+    let acc = 0;
+    for (let i = 0; i < count.length; i++) {
 
-class MyHashMap {
-    //private
-    #map;
-
-    constructor() {
-        this.#map = Array.from({ length: 1009 }, () => new Node(null, null));
-    };
-
-    #hash(key) {
-        return key % this.#map.length;
-    };
-
-    put(key, value) {
-        let node = this.#map[this.#hash(key)];
-
-        while (node.next) {
-            if (node.next.key === key && node.next.value !== value) {
-                node.next.value = value;
-                return;
-            }
-            node = node.next;
-        }
-
-        node.next = new Node(key, value);
-    };
-
-    get(key) {
-        let node = this.#map[this.#hash(key)];
-
-        while (node.next) {
-            if (node.next.key === key) {
-               return node.next.value;
-            }
-            node = node.next;
-        }
-
-        return -1;
-    };
-
-    remove(key) {
-        let node = this.#map[this.#hash(key)];
-
-        while (node.next) {
-            if (node.next.key === key) {
-                return node.next = node.next.next;
-            }
-            node = node.next;
+        if (count[i]) {
+            let actual = count[i];
+            count[i] = acc;
+            acc += actual;
         }
     }
+
+    return nums.map((n) => count[n]);
 };
 
 
-
 ```
-
----
-
-# **Résumé de la session – Design HashMap en JavaScript**
-
-## **1️⃣ Objectif**
-
-- Exercice LeetCode : **“Design HashMap”**
-- Implémenter une structure de type HashMap avec :
-  - `put(key, value)`
-  - `get(key)`
-  - `remove(key)`
-
-- Langage : **JavaScript (ES6+)**
-
----
-
-## **2️⃣ Problèmes rencontrés et étapes d’apprentissage**
-
-### **a) Manipulation de tableaux (`Array`)**
-
-- Tu as essayé :
-
-```js
-array = [];
-array[1000] = "value";
-```
-
-- Problèmes rencontrés :
-  - Comprendre **sparse arrays** et “trous” (`empty slots`).
-  - Différence entre `undefined` réel et “trou” dans un tableau.
-  - Impact sur `length` et itérations (`forEach`, `for...of`, `map`).
-
-- Solution / apprentissage :
-  - `array.length = index_max + 1` même si les éléments intermédiaires sont vides.
-  - `delete array[index]` supprime un élément mais **ne réduit pas length**.
-  - Sparse arrays sont différents des vrais `undefined`.
-
----
-
-### **b) Objets `{}` comme bucket**
-
-- Tu as exploré l’idée d’utiliser `{}` au lieu de `[]` pour chaque bucket :
-
-```js
-bucket = {};
-bucket[key] = value;
-```
-
-- Apprentissage :
-  - Les clés sont converties en **string**, mais ça fonctionne comme une HashMap simple.
-  - Pas de sparse arrays → économie mémoire.
-  - Accès direct : `obj[key]` → value, `delete obj[key]` → supprime la paire.
-  - Pour accéder par “index” (ordre d’insertion) : `Object.keys/values/entries()`.
-
-- Conclusion : `{}` est suffisant pour implémenter un HashMap simplifié en JS, mais en interview ou pour l’exercice, il est préférable de **gérer explicitement hash + bucket**.
-
----
-
-### **c) Erreurs avec `Node` et linked list**
-
-- Implémentation avec `Node(key, value, next)` et un **dummy head** pour chaque bucket.
-- Problème rencontré :
-
-```js
-while (node.next) {
-  node = node.next;
-}
-```
-
-- Erreur : `TypeError: Cannot read properties of null (reading 'next')`
-
-- Cause : après suppression (`node.next = node.next.next`), `node.next` peut devenir `null`, et la boucle continue.
-
-- Résolution :
-  - Ajouter `return` immédiatement après la suppression pour arrêter la boucle :
-
-```js
-if (node.next.key === key) {
-  node.next = node.next.next;
-  return;
-}
-```
-
----
-
-### **d) Dummy head**
-
-- Tu as découvert que certains utilisent :
-
-```js
-new ListNode((key = -1), (val = -1));
-```
-
-- Raison :
-  - Créer un **nœud factice** pour chaque bucket.
-  - Évite les **cas particuliers pour le premier nœud** dans `put/get/remove`.
-  - Les valeurs par défaut `-1` ou `null` ne sont jamais utilisées dans la logique réelle.
-
----
-
-### **e) Compréhension de Map vs Object**
-
-- `{}` fonctionne comme une HashMap simple, mais :
-  - Clés sont converties en string.
-  - Pas d’ordre d’insertion garanti.
-  - Méthodes limitées (`get`, `set`, `delete`, `size` absentes).
-
-- `Map` :
-  - Clés de **n’importe quel type** (objets, fonctions…).
-  - Ordre d’insertion garanti.
-  - Méthodes dédiées (`set`, `get`, `has`, `delete`, `size`).
-  - Optimisée pour les accès O(1).
-
----
-
-## **3️⃣ Comment je t’ai aidé**
-
-1. Expliquer le **comportement de `Array` avec des indices manquants** (sparse arrays, `length`, `undefined`).
-2. Clarifier la différence entre **trous dans un array** et **valeurs `undefined`**.
-3. Montrer pourquoi `{}` est plus sûr et évite les sparse arrays.
-4. Identifier la cause du **TypeError** dans la linked list (`remove`).
-5. Expliquer l’intérêt des **dummy heads** pour simplifier le code.
-6. Comparer `{}` vs `Map` et quand utiliser l’un ou l’autre.
-7. Expliquer la logique des collisions et pourquoi les solutions attendues utilisent souvent **linked lists par bucket**.
-
----
-
-## **4️⃣ Ce que tu as appris**
-
-- JavaScript arrays : sparse arrays, longueur, trous, `delete`.
-- JavaScript objects : clés converties en string, accéder/supprimer une paire, différence avec `Map`.
-- Linked list pour gérer collisions dans un hash map.
-- Dummy head pour simplifier `put/get/remove`.
-- Gestion des collisions et pourquoi `Map` existe malgré `{}`.
-- Debugging d’une erreur classique (`TypeError: Cannot read properties of null`) dans une linked list.
-
----
-
-## **5️⃣ Résultat final**
-
-- Une **HashMap fonctionnelle** avec :
-  - tableau de buckets, chaque bucket est une **linked list avec dummy head**
-  - `put(key, value)`
-  - `get(key)`
-  - `remove(key)`
-
-- Gestion correcte des collisions et des cas limites.
-- Syntaxe moderne ES6 avec champs privés `#map`.
-
----

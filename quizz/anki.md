@@ -1,15 +1,40 @@
-# Anki — Contexte IA pour création de cards
+# Anki — Contexte IA
 
-> **MAJ** : 2026-03-13 | **Total** : 131 cards | **Decks** : 7 | **Modèles** : 3
+> **MAJ** : 2026-03-16 | **Total** : 132 cards | **Decks** : 7 | **Modèles** : 3
 >
-> Ce fichier sert de **mémoire** pour l'IA lors de la création/modification de cartes Anki.
-> Consulter AVANT de créer de nouvelles cards pour garantir cohérence et éviter les doublons.
+> Mémoire IA pour création/modification de cartes Anki.
+> **But principal** : guider la décision card/pas card + éviter les doublons.
 
 ---
 
-## 1. Modèles (Note Types)
+## ⚡ 1. Process de décision (LIRE EN PREMIER)
 
-### Dev - Code Q/R _(principal — 76 cards)_
+Après chaque LeetCode (ou apprentissage), l'IA analyse les concepts et produit un **tableau de verdict** :
+
+| Apprentissage    | Card ?                | Pourquoi                                                         |
+| ---------------- | --------------------- | ---------------------------------------------------------------- |
+| _concept appris_ | **OUI** — type (deck) | ROI : réutilisable, piège prouvé, fait mémorisable               |
+| _autre concept_  | **NON**               | Leçon d'expérience / déjà couvert / trop niche / pas mémorisable |
+
+### Critères ROI pour créer une card
+
+| ✅ OUI (card)                                                 | ❌ NON (pas de card)                                                   |
+| ------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| **Fait mémorisable** : formule, syntaxe, pattern réutilisable | **Leçon d'expérience** : "ne pas sur-ingénier", "pivoter après 10 min" |
+| **Piège prouvé** : l'utilisateur est tombé dedans             | **Bug ponctuel** : erreur de code spécifique (k+2 vs k+=2)             |
+| **Pattern réutilisable** : applicable à 3+ problèmes futurs   | **Trop niche** : solution math spécifique, trick d'un seul problème    |
+| **Vrai gap de connaissance** : ne savait pas que ça existait  | **Déjà couvert** : concept déjà dans une card existante                |
+| **Rencontré 2+ fois** : pattern qui revient                   | **Trop tôt** : rencontré 1 seule fois, pas encore de pattern           |
+
+### Règle du push back
+
+L'utilisateur peut contester un verdict "NON". Si son argument montre un **vrai gap de connaissance** (pas juste un bug), réviser le verdict. Historique : l'utilisateur a eu raison 2 fois (ternaire expression/statement, Object.entries).
+
+---
+
+## 2. Modèles (Note Types)
+
+### Dev - Code Q/R _(principal)_
 
 | Champ          | Rôle                                     |
 | -------------- | ---------------------------------------- |
@@ -18,32 +43,23 @@
 | `Tags_Concept` | Mots-clés du concept (affiché en bas)    |
 | `Difficulte`   | ⭐ / ⭐⭐ / ⭐⭐⭐                       |
 
-**Template** : 1 carte (Question → Réponse)
+### Dev - Cloze _(texte à trous)_
 
-### Dev - Cloze _(texte à trous — 15 cards)_
+| Champ   | Rôle                                         |
+| ------- | -------------------------------------------- |
+| `Texte` | Texte avec `{{c1::réponse}}` (syntaxe cloze) |
+| `Extra` | Info complémentaire après la réponse         |
 
-| Champ   | Rôle                                          |
-| ------- | --------------------------------------------- |
-| `Texte` | Texte avec `{{c1::réponse}}` (syntaxe cloze)  |
-| `Extra` | Info complémentaire affichée après la réponse |
+Syntaxe : `{{c1::mot}}`, `{{c2::autre}}` pour trous indépendants.
 
-**Template** : Auto-généré par Anki (1 carte par `{{cN::...}}`)
-**Usage** : Mémoriser la **syntaxe exacte**, les mots-clés, l'ordre d'exécution.
-**Syntaxe** : `{{c1::mot}}`, `{{c2::autre}}` pour plusieurs trous indépendants.
-
-### Dev - Reversible _(bidirectionnelle — 9 cards)_
+### Dev - Reversible _(bidirectionnelle)_
 
 | Champ   | Rôle               |
 | ------- | ------------------ |
 | `Recto` | Concept / question |
 | `Verso` | Code / explication |
 
-**Templates** : 2 cartes par note :
-
-1. **Normal** : Recto → Verso (concept → code)
-2. **Inversée** : Verso → Recto (code → concept)
-
-**Usage** : Concepts où le lien **bidirectionnel** est important (voir du code et nommer le concept, ou l'inverse).
+2 cartes par note : Normal (Recto→Verso) + Inversée (Verso→Recto).
 
 ### CSS commun (thème Dracula)
 
@@ -109,397 +125,77 @@ em {
 
 ---
 
-## 2. Structure des Decks
+## 3. Format & Conventions
 
-| Deck                      | Cards   | Modèles utilisés                            |
-| ------------------------- | ------- | ------------------------------------------- |
-| `Dev::01-JavaScript-Core` | 57      | Q/R (33) + Cloze (20) + Rev (5)             |
-| `Dev::02-React`           | 28      | Q/R (17) + Corrections (7) + Rev (4)        |
-| `Dev::03-CSS-HTML`        | 8       | Q/R (8)                                     |
-| `Dev::04-Tooling-Git`     | 6       | Q/R (6)                                     |
-| `Dev::05-Backend-API`     | 0       | _(réservé Phase 11+)_                       |
-| `Dev::06-Entretien`       | 7       | Q/R (7)                                     |
-| `Dev::07-LeetCode-Algo`   | 25      | Q/R (15) + Cloze (7) + Rev (1) + Output (2) |
-| **Total**                 | **131** |                                             |
+### Diversité des formes
 
----
-
-## 3. Inventaire des concepts couverts
-
-### Dev::01-JavaScript-Core (51 cards)
-
-#### Q/R (31)
-
-- **Types** : 7 primitifs, typeof gotchas (null, NaN, []), primitif vs objet (valeur vs référence)
-- **Scope/Hoisting** : var vs let vs const, TDZ, scope bloc vs fonction
-- **Closures** : Définition + exemple counter, piège for/var/setTimeout, scopes indépendants
-- **this** : 4 règles de binding (new > explicit > implicit > default), arrow fn + this lexical
-- **Coercion** : == vs ===, cas piégeux (""==false, 0==[], NaN==NaN), opérateur + concaténation
-- **Prototype** : Prototype chain, Object.getPrototypeOf
-- **Spread/Rest** : Différence contextuelle, shallow copy
-- **Event Loop** : Call stack → microtask → macrotask, exercice d'ordre d'exécution
-- **Promises** : 3 états, async/await sugar syntax, Promise.all/allSettled/race/any
-- **Async/Await** : Relation avec Promises, piège await dans async, exercice ordre exécution
-- **Array methods** : map vs filter, chaînage filter→map→join
-- **ES Modules** : Named vs default export, re-export, ESM vs CommonJS
-- **Fetch** : Pattern avec error handling (res.ok), piège fetch ne rejette pas sur 404
-- **Map/Set** : Quand utiliser vs objet/array, O(1) .has()
-- **Destructuring** : Array/Object, renommage, valeurs par défaut, nested, paramètres
-- **localStorage** : getItem, setItem, JSON.stringify/parse, 5MB, synchrone
-- **Math.max/min** : comparaison multi-args, spread pour tableau, pièges -Infinity/Infinity
-- **Object.keys/values/entries** : parcourir un {}, {} pas itérable directement, vs Map
-
-#### Cloze (15)
-
-- useEffect deps `[]` au montage
-- Référence vs valeur (objets vs primitifs)
-- Spread operator pour nouveau tableau
-- setState objet immutable `{...prev, key: val}`
-- async/await retourne Promise
-- 3 états d'une Promise
-- Event Loop ordre (sync → micro → macro)
-- Scope let/const (bloc) vs var (fonction)
-- Keys React pour diffing
-- useMemo (résultat) vs useCallback (fonction)
-- Rules of Hooks (top level + composant/custom hook)
-- Array.isArray vs typeof []
-- box-sizing border-box
-- localStorage stocke strings → JSON
-- React.memo empêche re-render enfants
-- push() accepte plusieurs arguments (push(a, b))
-- Ternaire = expression (valeur) pas statement (actions) — OK pour assigner/return, pas pour .push/.set
-- delete obj[key] vs obj[key] = undefined (supprime la clé vs garde la clé)
-- {} clés converties en string (obj[42] === obj['42']), vs Map qui garde le type
-
-#### Reversible (5)
-
-- Closure (concept ↔ code counter)
-- Spread vs Rest (syntaxe ↔ usage)
-- Destructuring (concept ↔ exemples)
-- map/filter/find (nom ↔ comportement)
-- ES Modules import/export (syntaxe ↔ patterns)
-
----
-
-### Dev::02-React (28 cards)
-
-#### Q/R (24)
-
-- **Fondamentaux** : Virtual DOM, diffing, reconciliation
-- **Props/State** : Différence, data flow descendant, callbacks remontants
-- **useEffect** : Cycle de vie (setup/cleanup/deps), tableau de dépendances
-- **Immutabilité** : Pourquoi (Object.is), spread pour nouvel objet/tableau
-- **useReducer** : Quand vs useState, state complexe, fonction pure
-- **useCallback** : Mémoisation fonction, utile avec React.memo
-- **Context API** : createContext/Provider/useContext, problème re-render global
-- **useMemo** : Mémoisation résultat, vs useCallback, équivalence
-- **Keys** : Pourquoi pas l'index, generateId, reconciliation
-- **React.memo** : HOC, shallow comparison, fonctions en props
-- **Custom Hooks** : useLocalStorage pattern, règles des hooks, préfixe "use"
-- **Forms** : Controlled vs uncontrolled, React Hook Form
-- **Lifting State Up** : Pattern parent commun, quand préférer Context
-- **Composition** : children, slots, vs héritage
-- **Re-renders** : Déclencheurs (setState, parent, Context), optimisations
-- **Data fetching** : Pattern useEffect + cleanup, race conditions, TanStack Query
-- **setState batching** : Piège count+1 ×3, updater function `prev =>`
-- **Rendu conditionnel** : &&, ternaire, early return, piège `0 &&`
-- **Fragments** : `<>...</>`, React.Fragment avec key
-- **Events** : camelCase, preventDefault, e.target.value, Synthetic Events
-- **Update objet state** : Spread `{...prev, name: 'Bob'}`, pas de mutation
-- **Reducer pattern** : action.type, switch, dispatch, payload
-- **Fonctions pures** : Même entrée→même sortie, pas de side effects, render pur
-- **StrictMode** : Double-render dev, détecte impuretés, pas en prod
-
-#### Reversible (4)
-
-- useReducer pattern complet (code ↔ concept)
-- Context API (syntaxe ↔ concept)
-- Custom Hook (quand/comment ↔ code useToggle)
-- Lifting State Up (pattern ↔ code parent/enfants)
-
----
-
-### Dev::03-CSS-HTML (8 cards)
-
-- Flexbox vs Grid (1D vs 2D, quand utiliser quoi)
-- Box model (content-box vs border-box)
-- Spécificité CSS (calcul A,B,C, !important)
-- CSS Custom Properties (variables, vs Sass, dynamiques)
-- Responsive design (media queries, clamp, container queries, mobile-first)
-- Position (relative, absolute, fixed, sticky)
-- HTML sémantique (header, nav, main, article, section, aside)
-- Tailwind CSS (utility-first, avantages/inconvénients)
-
----
-
-### Dev::04-Tooling-Git (6 cards)
-
-- Vite (ESM natifs, HMR, Rollup en prod, vs Webpack)
-- npm (commandes, dependencies vs devDependencies, package-lock)
-- ESLint (analyse statique, flat config, vs Prettier)
-- Git workflow quotidien (status, add, commit, push, pull, log)
-- Git branches (branch, checkout -b, switch, merge, conventions)
-- Git annulation (stash/pop, reset --soft, revert, diff reset vs revert)
-
----
-
-### Dev::05-Backend-API (0 cards)
-
-> Deck réservé pour Phase 11+ (Hono, HTTP, REST, CORS, etc.)
-
----
-
-### Dev::06-Entretien (7 cards)
-
-- SPA vs MPA (+ SSR/SSG hybride)
-- Cookie vs localStorage vs sessionStorage (tableau comparatif)
-- Piège référence/copie objet (spread shallow copy, structuredClone)
-- Piège setTimeout + closure + let (ordre d'exécution)
-- Promise.allSettled (exercice output)
-- Process de debugging (méthode systématique, DevTools) (card en pause)
-- Méthode STAR (structurer réponse entretien) (card en pause)
-
----
-
-### Dev::07-LeetCode-Algo (21 cards)
-
-> Deck créé pour accompagner NeetCode 150 (easy → medium). Concepts fondamentaux pour résoudre des problèmes d'algo.
-
-#### Big O (6 cards)
-
-- Q/R : Notation Big O — définition, 5 complexités courantes (O(1) à O(n²)), exemples visuels ⭐
-- Q/R : Comment déterminer la complexité Big O d'un code — règles pratiques, piège .includes() dans for ⭐⭐
-- Q/R : O(n²) vs O(n × m) — nested loops sur même collection vs 2 dimensions différentes, piège mental ⭐⭐
-- Q/R Output : Contains Duplicate brute force O(n²) vs Set O(n) — comparaison ⭐⭐
-- Cloze : Complexités des opérations courantes (arr[i], includes, Set.has, push, sort)
-- Cloze : Classement des 5 complexités rapide → lente
-
-#### Hash Set / Map (5 cards)
-
-- Q/R : Hash Set — définition, hash function, JS Set API, vs Array.includes ⭐
-- Q/R : Frequency Map pattern — `freq.set(x, (freq.get(x) || 0) + 1)`, problèmes LeetCode ⭐⭐
-- Q/R Output : Map frequency counting exercise — freq.get(2)=2, freq.size=3 ⭐⭐
-- Cloze : Set pour existence vs Map pour clé-valeur/fréquence
-- Reversible : Frequency Map pattern (code ↔ concept)
-
-#### Boucles (4 cards)
-
-- Q/R : for classique vs for...of vs for...in — quand utiliser chaque ⭐
-- Q/R : Boucle for vs Array method (.map, .filter) — LeetCode vs React ⭐⭐
-- Cloze : for...of (valeurs array) vs for...in (clés objet) + piège for...in sur array
-- Cloze : Destructuring dans for...of sur Map — `[key, value]`, pattern comparaison frequency maps
-- Reversible : Besoin de l'index → for classique
-
-#### Complement Map (2 cards)
-
-- Q/R : Complement Map pattern (One-pass Map) — `target - nums[i]` + `map.has()`, piège `set()` après le check ⭐⭐
-- Cloze : Syntaxe complète du pattern + 4 trous (complement, has, set, ordre)
-
-#### Read/Write Pointer (1 card)
-
-- Q/R : Read/Write Pointer pattern — reader (i) avance toujours, writer (k) avance si condition, in-place O(n) O(1) ⭐⭐
-
-#### Frequency Array / Hashable Key (2 cards)
-
-- Q/R : Frequency Array pattern — Array(26).fill(0), charCodeAt(0)-97, tableau ordonné/stable, convertible en clé hashable ⭐⭐
-- Q/R : Hashable Key en JS — .join('#') pour arrays, JSON.stringify() pour objets, car JS compare par référence ⭐⭐
-
-#### Algo Thinking (2 cards)
-
-- Q/R : Approche Brute Force → Optimize — méthode 4 étapes, exemple Contains Duplicate ⭐⭐
-- Cloze : 4 étapes LeetCode (Comprendre → Brute Force → Bottleneck → Optimiser)
-
-#### Linked List (2 cards)
-
-- Q/R : Linked List — structure Node, parcours while(cur), suppression prev.next = cur.next, pièges (boucle infinie, null ≠ suppression) ⭐⭐
-- Q/R : Dummy Head Node — sentinelle pour éliminer les cas spéciaux, pattern cur.next, usage hash table buckets ⭐⭐
-
-#### Concepts à carder plus tard (NeetCode 150 progression)
-
-| Catégorie         | Quand              | Exemples de problèmes                          |
-| ----------------- | ------------------ | ---------------------------------------------- |
-| Two Pointers      | Après Arrays easy  | Valid Palindrome, Two Sum II, 3Sum             |
-| Sliding Window    | Après Two Pointers | Best Time to Buy/Sell Stock, Longest Substring |
-| Stack             | Après Sliding Win  | Valid Parentheses, Min Stack, Reverse Polish   |
-| Binary Search     | Après Stack        | Search in Rotated Array, Koko Eating Bananas   |
-| Linked List       | Après Binary Srch  | Reverse Linked List, Merge Two Lists           |
-| Trees / DFS / BFS | Après Linked List  | Max Depth, Level Order, Validate BST           |
-| Sorting           | Parallèle          | Merge Sort, Quick Sort, comparateurs custom    |
-| Recursion         | Parallèle          | Fibonacci, factorial, tree traversal           |
-
----
-
-## 4. Tags utilisés (84)
-
-### Par catégorie
-
-**JS Core** : `js-core`, `types`, `typeof`, `scope`, `hoisting`, `closure`, `this`, `coercition`, `prototype`, `spread`, `rest`, `destructuring`, `ES6`, `ES-modules`, `variables`, `array-methods`, `Map`, `Set`, `fondamentaux`
-
-**Async** : `async`, `await`, `promise`, `event-loop`, `fetch`
-
-**React** : `react`, `state`, `useState`, `useEffect`, `useReducer`, `useCallback`, `useMemo`, `memo`, `context`, `keys`, `rendering`, `custom-hooks`, `forms`, `lifting-state`, `composition`, `patterns`
-
-**CSS/HTML** : `css`, `css-html`, `html`, `layout`, `box-model`, `specificity`, `responsive`, `position`, `semantique`, `tailwind`, `variables`
-
-**Tooling** : `tooling`, `vite`, `npm`, `eslint`, `git`, `workflow`
-
-**Entretien** : `entretien`, `soft-skills`, `output-question`, `stockage`, `architecture`
-
-**Meta** : `fondamentaux`, `gotcha`, `cloze`, `reversible`, `performance`
-
-**Algo / LeetCode** : `algo`, `big-o`, `complexite`, `hash-set`, `hash-map`, `data-structure`, `boucles`, `array-methods`, `methode`, `patterns`
-
-**Non utilisés (futures phases)** : `a11y`, `auth`, `backend`, `cicd`, `database`, `docker`, `env`, `error-boundary`, `lazy`, `middleware`, `nodejs`, `router`, `securite`, `SQL`, `testing`, `two-pointers`, `sliding-window`, `stack`, `binary-search`, `linked-list`, `trees`, `sorting`, `recursion`, `typescript`, `zustand`, `useId`, `useRef`
-
----
-
-## 5. Règles de création
-
-### Principe de base
-
-- **1 concept = 1 card** (principe d'information minimale)
-- **Pas de card multi-concept** (splitter en plusieurs)
-- Réponse **max ~15 lignes** visibles sans scroll
-
-### Diversité obligatoire (objectif par concept important)
-
-Quand un concept est important, créer **2-3 formes** :
-
-| Forme      | Modèle           | Quand l'utiliser                                 |
+| Forme      | Modèle           | Quand                                            |
 | ---------- | ---------------- | ------------------------------------------------ |
 | Q/R        | Dev - Code Q/R   | Explication complète, "qu'est-ce que", "comment" |
 | Cloze      | Dev - Cloze      | **Syntaxe exacte**, mots-clés, ordre, patterns   |
 | Reversible | Dev - Reversible | **Code ↔ concept** bidirectionnel                |
 | Output     | Dev - Code Q/R   | "Que log ce code ?" (tag: `output-question`)     |
 
-**Ratio cible** : ~60% Q/R, ~20% Cloze, ~10% Reversible, ~10% Output
+Ratio cible : ~60% Q/R, ~20% Cloze, ~10% Reversible, ~10% Output
 
-### Format HTML des cards
+### HTML
 
 ```html
-<!-- Titres/concepts en bold violet -->
 <b>Concept important</b>
-
-<!-- Code inline -->
 <code>useState</code>
-
-<!-- Blocs de code -->
 <pre><code>function example() {
   return 'hello';
 }</code></pre>
-
-<!-- Listes -->
 • Item 1<br />• Item 2
-
-<!-- Séparateur -->
-<br />
-
-<!-- Tableaux (entretien) -->
-<table>
-  <tr>
-    <th>Header</th>
-  </tr>
-  <tr>
-    <td>Cell</td>
-  </tr>
-</table>
 ```
 
 ### Conventions
 
-- **Tags** : `lowercase`, tirets pour multi-mots (`array-methods`, `custom-hooks`)
-- **Difficulté** : ⭐ (définition/basique) | ⭐⭐ (comprendre/appliquer) | ⭐⭐⭐ (pièges/avancé)
-- **Références au projet** : Mentionner ChefPlanning quand pertinent ("Comme dans ton `useEmployees`")
-- **Pièges** : Toujours inclure les gotchas courants (⚠️)
-- **Deck placement** : Le concept détermine le deck, pas le contexte d'utilisation
-  - `localStorage` → JS-Core (API navigateur), pas React
-  - `useReducer` → React (hook React), pas JS-Core
-
-### Avant de créer de nouvelles cards
-
-1. **Vérifier les doublons** : chercher par contenu (`deck:Dev "mot-clé"`)
-2. **Vérifier le niveau** : la card correspond-elle à la phase actuelle ? (voir copilot-instructions.md)
-3. **Diversifier** : ne pas créer que des Q/R, ajouter des Cloze/Reversible
-4. **Vérifier le deck** : placer dans le bon deck selon le concept principal
+- **1 concept = 1 card**, max ~15 lignes, pas de multi-concept
+- **Tags** : `lowercase`, tirets (`array-methods`, `custom-hooks`)
+- **Difficulté** : ⭐ basique | ⭐⭐ appliquer | ⭐⭐⭐ pièges
+- **Deck** : le concept détermine le deck, pas le contexte d'utilisation
+- **Pièges** : toujours inclure les gotchas courants (⚠️)
+- Avant de créer : vérifier doublons via `mcp_anki-mcp_findNotes(query: 'deck:Dev "mot-clé"')`
 
 ---
 
-## 6. MCP Anki — Aide-mémoire API
+## 4. Decks & Inventaire anti-doublons
 
-### Créer des cards
+| Deck                      | Cards   | Mots-clés couverts (pour éviter doublons)                                                                                                                                                                                                                                                                                                                                                                                      |
+| ------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Dev::01-JavaScript-Core` | 57      | types, typeof, scope, hoisting, TDZ, closure, this, coercion, prototype, spread/rest, destructuring, event-loop, promises, async/await, array-methods, ES-modules, fetch, Map/Set, localStorage, Math.max/min, Object.keys/values/entries, push() multi-args, ternaire expression, delete obj[key], {} clés string                                                                                                             |
+| `Dev::02-React`           | 28      | Virtual DOM, props/state, useEffect, immutabilité, useReducer, useCallback, useMemo, Context, keys, React.memo, custom hooks, forms, lifting state, composition, re-renders, data fetching, batching, rendu conditionnel, fragments, events, reducer pattern, fonctions pures, StrictMode                                                                                                                                      |
+| `Dev::03-CSS-HTML`        | 8       | flexbox, grid, box-model, spécificité, variables CSS, responsive, position, sémantique, tailwind                                                                                                                                                                                                                                                                                                                               |
+| `Dev::04-Tooling-Git`     | 6       | vite, npm, eslint, git workflow, branches, annulation                                                                                                                                                                                                                                                                                                                                                                          |
+| `Dev::05-Backend-API`     | 0       | _(réservé Phase 11+)_                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `Dev::06-Entretien`       | 7       | SPA/MPA, stockage, référence/copie, setTimeout closure, Promise.allSettled                                                                                                                                                                                                                                                                                                                                                     |
+| `Dev::07-LeetCode-Algo`   | 26      | Big O (notation, déterminer, O(n²) vs O(n×m), opérations courantes), Hash Set/Map (Set API, frequency map, Map counting), Boucles (for/for..of/for..in, destructuring Map), Complement Map (one-pass), Read/Write Pointer, Frequency Array (charCodeAt, Array(26).fill(0)), Hashable Key (.join, JSON.stringify), Prefix Sum (counting→cumul), Algo Thinking (brute force→optimize), Linked List (Node, traversal, dummy head) |
+| **Total**                 | **132** |                                                                                                                                                                                                                                                                                                                                                                                                                                |
+
+### Tags existants
+
+`js-core`, `types`, `typeof`, `scope`, `hoisting`, `closure`, `this`, `coercition`, `prototype`, `spread`, `rest`, `destructuring`, `ES6`, `ES-modules`, `variables`, `array-methods`, `Map`, `Set`, `fondamentaux`, `async`, `await`, `promise`, `event-loop`, `fetch`, `react`, `state`, `useState`, `useEffect`, `useReducer`, `useCallback`, `useMemo`, `memo`, `context`, `keys`, `rendering`, `custom-hooks`, `forms`, `lifting-state`, `composition`, `patterns`, `css`, `css-html`, `html`, `layout`, `box-model`, `specificity`, `responsive`, `position`, `semantique`, `tailwind`, `variables`, `tooling`, `vite`, `npm`, `eslint`, `git`, `workflow`, `entretien`, `soft-skills`, `output-question`, `stockage`, `architecture`, `fondamentaux`, `gotcha`, `cloze`, `reversible`, `performance`, `algo`, `big-o`, `complexite`, `hash-set`, `hash-map`, `data-structure`, `boucles`, `methode`, `prefix-sum`
+
+---
+
+## 5. MCP Anki — API
 
 ```
-// Une seule card
 mcp_anki-mcp_addNote(deckName, modelName, fields: {}, tags: [])
-
-// Batch (même deck + même modèle)
 mcp_anki-mcp_addNotes(deckName, modelName, notes: [{fields, tags}])
-```
-
-### Chercher / Vérifier
-
-```
-// Chercher par deck
-mcp_anki-mcp_findNotes(query: "deck:Dev::01-JavaScript-Core")
-
-// Chercher par contenu
 mcp_anki-mcp_findNotes(query: 'deck:Dev "mot-clé"')
-
-// Chercher par tag
-mcp_anki-mcp_findNotes(query: "deck:Dev tag:closure")
-
-// Chercher par modèle
-mcp_anki-mcp_findNotes(query: 'deck:Dev note:"Dev - Cloze"')
-
-// Détails des notes
 mcp_anki-mcp_notesInfo(notes: [id1, id2])
-```
-
-### Modifier / Supprimer
-
-```
-// Modifier le contenu
 mcp_anki-mcp_updateNoteFields(noteId, fields: {})
-
-// Supprimer (ATTENTION: irréversible)
 mcp_anki-mcp_deleteNotes(noteIds: [], confirmDeletion: true)
 ```
 
-### Modèles
-
-```
-// Voir les champs
-mcp_anki-mcp_modelFieldNames(modelName)
-
-// Voir le CSS
-mcp_anki-mcp_modelStyling(modelName)
-
-// Créer un nouveau modèle
-mcp_anki-mcp_createModel(modelName, inOrderFields, css, isCloze, cardTemplates)
-```
-
 ---
 
-## 7. Progression projet
+## 6. Maintenance
 
-> Synchronisé avec `copilot-instructions.md`
+- Après création de cards : MAJ ce fichier (total, deck count, mots-clés inventaire)
+- Deck placement : concept → deck (`localStorage` → JS-Core, `useReducer` → React)
+- Pas de cards pour phases non commencées
 
-| Phase    | Status      | Cards attendues                                          |
-| -------- | ----------- | -------------------------------------------------------- |
-| 0-9      | ✅ Done     | JS, React, CSS, Tooling, Entretien — **100 cards**       |
-| LeetCode | 🔄 En cours | Algo fondamentaux (NeetCode 150) — **21 cards**          |
-| 10A      | 🔜 Next     | TypeScript, Zod, React Hook Form                         |
-| 10B      | À venir     | Vitest, React Router, Git avancé, SQL théorique          |
-| 11       | À venir     | Backend (Hono, HTTP, REST, CORS) → deck `05-Backend-API` |
-| 12       | À venir     | Database (PostgreSQL, Drizzle, Docker)                   |
-| 13+      | À venir     | Auth, Deploy, Testing, IA...                             |
-
-### Quand ajouter des cards ?
-
-- **À chaque fin de phase** : créer les cards pour les nouveaux concepts appris
-- **Nouveaux decks** : créer si une catégorie devient assez grande (ex: `Dev::07-TypeScript`)
-- **Pas de cards avancées** : ne pas créer de cards pour des phases non commencées
-
----
-
-_Dernière vérification complète : 2026-03-13 (ajout delete obj, Object.entries, {} clés string après Design HashMap)_
+_Dernière vérification : 2026-03-16_
