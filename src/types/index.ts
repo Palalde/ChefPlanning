@@ -10,6 +10,13 @@ export type Employee = {
 // --- Shift ---
 export type ShiftType = "am" | "pm" | "full" | "split";
 
+export type ShiftTypeConfig = {
+  label: string;
+  emoji: string;
+  order: number;
+  colorClass: string;
+};
+
 type BaseShift = {
   id: string; // "matin"
   name: string; // "Matin"
