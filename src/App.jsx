@@ -3,7 +3,7 @@ import { Modal, Button } from "@/components/ui";
 import { EmployeeList } from "@/features/employees";
 import { PlanningTable, WeekNav } from "@/features/planning";
 import { ShiftManager } from "@/features/shifts";
-import { getShiftColorClass, groupShiftsByType } from "@/utils";
+import { groupShiftsByType } from "@/utils";
 import { useState } from "react";
 import { useAppContext } from "./context/AppContext.jsx";
 
@@ -136,7 +136,7 @@ function App() {
                             setSelectedAssignment(null);
                           }}
                           className={`w-full text-left px-3 py-2 rounded-lg border transition-all cursor-pointer
-                            ${getShiftColorClass(shift.type)} hover:shadow-md hover:brightness-95
+                            ${group.colorClass} hover:shadow-md hover:brightness-95
                             ${
                               selectedAssignment?.shiftId === shift.id
                                 ? "ring-2 ring-accent"

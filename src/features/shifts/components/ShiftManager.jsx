@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Modal, Button } from "@/components/ui";
 import {
-  getShiftColorClass,
   calcShiftMinutes,
   formatMinutesToDisplay,
   groupShiftsByType,
@@ -88,7 +87,7 @@ export default function ShiftManager({ onDeleteShift }) {
                   <div
                     key={shift.id}
                     className={`flex items-center justify-between p-3 rounded-lg border transition-all
-                      ${getShiftColorClass(shift.type)} hover:shadow-sm`}
+                      ${group.colorClass} hover:shadow-sm`}
                   >
                     {/* Infos du shift */}
                     <div className="flex flex-col gap-0.5">
