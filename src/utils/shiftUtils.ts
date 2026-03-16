@@ -1,44 +1,20 @@
-import { Shift, ShiftType } from "@/types";
+import { Shift, ShiftType, ShiftTypeConfig } from "@/types";
+import { SHIFT_TYPE_CONFIG } from "@/constants/shifts";
 import { timeToMinutes } from "./timeUtils";
 
-// --- Types locaux ---
+// --- Local Types ---
 
-type ShiftMeta = {
-  label: string;
-  emoji: string;
-  order: number;
-};
-
-type ShiftGroup = ShiftMeta & {
+type ShiftGroup = ShiftTypeConfig & {
   type: ShiftType;
   shifts: Shift[];
 };
 
-// --- Constantes ---
+// --- Functions ---
 
-const SHIFT_COLOR_MAP: Record<ShiftType, string> = {
-  am: "bg-shift-matin border-shift-matin-border",
-  pm: "bg-shift-aprem border-shift-aprem-border",
-  full: "bg-shift-journee border-shift-journee-border",
-  split: "bg-shift-coupe border-shift-coupe-border",
-};
+// --- Helpers for groupShiftsByType ---
 
-const SHIFT_TYPE_META: Record<ShiftType, ShiftMeta> = {
-  am: { label: "Matin", emoji: "☀️", order: 0 },
-  pm: { label: "Après-midi", emoji: "🌙", order: 1 },
-  full: { label: "Journée", emoji: "📅", order: 2 },
-  split: { label: "Coupé", emoji: "✂️", order: 3 },
-};
-
-// --- Fonctions ---
-
-// Retourne la classe de couleur Tailwind pour un type de shift donné
-export function getShiftColorClass(type: ShiftType): string {
-  return SHIFT_COLOR_MAP[type];
-}
-
-// Groupe les shifts par type et les trie par startTime
-export function groupShiftsByType(shifts: Shift[]): ShiftGroup[] {
+/** Groups shifts, attaching config (label, emoji, order, colorClass) */
+function buildShiftGroups(shifts: Shift[]): ShiftGroup[] {
   const groups = new Map<ShiftType, ShiftGroup>();
 
   for (const shift of shifts) {
@@ -51,34 +27,52 @@ export function groupShiftsByType(shifts: Shift[]): ShiftGroup[] {
 
     groups.set(shift.type, {
       type: shift.type,
-      ...SHIFT_TYPE_META[shift.type], //label, emoji, order
+      ...SHIFT_TYPE_CONFIG[shift.type],
       shifts: [shift],
     });
   }
 
-  // sort groups by type order
-  const sortedGroups = Array.from(groups.values()).sort(
-    (a, b) => a.order - b.order,
-  );
-
-  // sort shifts in each group by startTime
-  return sortedGroups.map((group) => ({
-    // spread all
-    ...group,
-    //  then sort shifts by startTime
-    shifts: [...group.shifts].sort((a, b) =>
-      a.startTime.localeCompare(b.startTime),
-    ),
-  }));
+  return Array.from(groups.values());
 }
 
-// Calcule la durée totale d'un shift en minutes (soustrait la pause si split)
+/** sort shifts first by type order, then by start time */
+function sortGroups(groups: ShiftGroup[]): ShiftGroup[] {
+  // first Sort groups by their type order
+  const sortedByType = groups.toSorted((a, b) => a.order - b.order);
+
+  // then Sort shifts within each group by start time
+  const sortedShifts = sortedByType.map((group) => ({
+    ...group,
+    shifts: [...group.shifts].sort(
+      (a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime),
+    ),
+  }));
+
+  return sortedShifts;
+}
+
+// --- Main Exported Function ---
+
+/**
+ * @param shifts list of shifts to group
+ * @returns shift groups with shifts sorted by type order and start time with meta (label, emoji)
+ */
+export function groupShiftsByType(shifts: Shift[]): ShiftGroup[] {
+  const groups = buildShiftGroups(shifts);
+
+  return sortGroups(groups);
+}
+
+/**
+ * @param shift start and end times, and break times if split
+ * @returns total minutes of the shift
+ */
 export function calcShiftMinutes(shift: Shift): number {
   const start = timeToMinutes(shift.startTime);
   const end = timeToMinutes(shift.endTime);
   let total = end - start;
 
-  // Soustraire la pause pour les shifts coupés
+  // if it's a split shift, subtract the break time
   if (shift.type === "split") {
     const breakStartMn = timeToMinutes(shift.breakStart);
     const breakEndMn = timeToMinutes(shift.breakEnd);
@@ -86,4 +80,9 @@ export function calcShiftMinutes(shift: Shift): number {
   }
 
   return total;
+}
+
+/** get CSS class for a shift type */
+export function getShiftColorClass(type: ShiftType): string {
+  return SHIFT_TYPE_CONFIG[type].colorClass;
 }
