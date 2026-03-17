@@ -53,3 +53,10 @@ export type Assignment = {
   shiftId: string; // "matin"
   weekOf: `${number}-${number}-${number}`; // "2024-06-17"
 };
+
+// --- Hours ---
+export type HoursSummary = {
+  total: number;
+  am: number;
+  pm: number;
+};

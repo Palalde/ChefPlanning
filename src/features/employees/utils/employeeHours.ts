@@ -1,43 +1,27 @@
-import { Assignment, Shift } from "@/types";
-import { timeToMinutes } from "@/utils";
+import { Assignment, HoursSummary, Shift } from "@/types";
+import { calcShiftAmPm } from "@/utils";
 
-const NOON = 12 * 60;
-
+/**
+ *
+ * @param assignments use shiftsId assigned to the employee
+ * @param shifts all available shifts to get the details of the assigned shifts
+ * @returns summary of hours worked by the employee
+ */
 export function getEmployeeHours(
-  employeeId: string,
   assignments: Assignment[],
   shifts: Shift[],
-): { total: number; am: number; pm: number } {
-  const shiftMap = new Map(shifts.map((shift) => [shift.id, shift]));
-  const result = { total: 0, am: 0, pm: 0 };
+): HoursSummary {
+  const shiftMap = new Map(shifts.map((s) => [s.id, s]));
+  const result: HoursSummary = { total: 0, am: 0, pm: 0 };
 
-  for (const { employeeId: assignedEmployeeId, shiftId } of assignments) {
-    if (assignedEmployeeId !== employeeId) continue;
-
+  for (const { shiftId } of assignments) {
     const shift = shiftMap.get(shiftId);
-    if (!shift) continue;
-
-    const start = timeToMinutes(shift.startTime);
-    const end = timeToMinutes(shift.endTime);
-
-    let am = 0;
-    let pm = 0;
-
-    if (shift.type === "am") {
-      am = end - start;
-    } else if (shift.type === "pm") {
-      pm = end - start;
-    } else if (shift.type === "full") {
-      am = NOON - start;
-      pm = end - NOON;
-    } else if (shift.type === "split") {
-      am = timeToMinutes(shift.breakStart) - start;
-      pm = end - timeToMinutes(shift.breakEnd);
+    if (shift) {
+      const shiftHours = calcShiftAmPm(shift);
+      result.total += shiftHours.total;
+      result.am += shiftHours.am;
+      result.pm += shiftHours.pm;
     }
-
-    result.total += am + pm;
-    result.am += am;
-    result.pm += pm;
   }
 
   return result;

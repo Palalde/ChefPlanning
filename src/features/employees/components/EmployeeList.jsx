@@ -71,17 +71,23 @@ function EmployeeList({ onDeleteEmployee }) {
         </div>
       ) : (
         <div className="space-y-2">
-          {employees.map((employee) => (
-            <EmployeeCard
-              key={employee.id}
-              employee={employee}
-              workedMinutes={
-                getEmployeeHours(employee.id, assignments, shifts).total
-              }
-              onEdit={() => handleEditClick(employee)}
-              onDelete={() => handleDeleteEmployee(employee.id)}
-            />
-          ))}
+          {employees.map((employee) => {
+            // assignations de l'employé
+            const employeeAssignments = assignments.filter(
+              (a) => a.employeeId === employee.id,
+            );
+            return (
+              <EmployeeCard
+                key={employee.id}
+                employee={employee}
+                workedMinutes={
+                  getEmployeeHours(employeeAssignments, shifts).total
+                }
+                onEdit={() => handleEditClick(employee)}
+                onDelete={() => handleDeleteEmployee(employee.id)}
+              />
+            );
+          })}
         </div>
       )}
 

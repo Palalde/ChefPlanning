@@ -10,12 +10,16 @@ import { useAppContext } from "@/context/AppContext";
 function EmployeeRow({ employee, onCellClick }) {
   // context
   const { assignments, addAssignment, shifts } = useAppContext();
+  // assignations de l'employé
+  const employeeAssignments = assignments.filter(
+    (a) => a.employeeId === employee.id,
+  );
   // Calcul des heures (total, AM, PM) via utilitaire centralisé
   const {
     total: totalMinutes,
     am: amMinutes,
     pm: pmMinutes,
-  } = getEmployeeHours(employee.id, assignments, shifts);
+  } = getEmployeeHours(employeeAssignments, shifts);
   const isOvertime = totalMinutes > employee.weeklyMinutes;
   // Types de shifts qui occupent AM + PM (apparaissent sur les deux lignes)
   const multiLineTypes = ["full", "split"];

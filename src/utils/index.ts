@@ -9,5 +9,6 @@ export {
 export {
   getShiftColorClass,
   calcShiftMinutes,
+  calcShiftAmPm,
   groupShiftsByType,
 } from "./shiftUtils";

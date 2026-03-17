@@ -1,4 +1,4 @@
-import { Shift, ShiftType, ShiftTypeConfig } from "@/types";
+import { Shift, ShiftType, ShiftTypeConfig, HoursSummary } from "@/types";
 import { SHIFT_TYPE_CONFIG } from "@/constants/shifts";
 import { timeToMinutes } from "./timeUtils";
 
@@ -80,6 +80,33 @@ export function calcShiftMinutes(shift: Shift): number {
   }
 
   return total;
+}
+
+/**
+ * @param shift start and end times, and break times if split
+ * @returns minutes of the shift, split between am and pm
+ */
+export function calcShiftAmPm(shift: Shift): HoursSummary {
+  const start = timeToMinutes(shift.startTime);
+  const end = timeToMinutes(shift.endTime);
+  const NOON = 12 * 60;
+
+  let am = 0;
+  let pm = 0;
+
+  if (shift.type === "am") {
+    am = end - start;
+  } else if (shift.type === "pm") {
+    pm = end - start;
+  } else if (shift.type === "full") {
+    am = NOON - start;
+    pm = end - NOON;
+  } else if (shift.type === "split") {
+    am = timeToMinutes(shift.breakStart) - start;
+    pm = end - timeToMinutes(shift.breakEnd);
+  }
+
+  return { total: am + pm, am, pm };
 }
 
 /** get CSS class for a shift type */
