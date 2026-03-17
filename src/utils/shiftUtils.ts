@@ -65,25 +65,6 @@ export function groupShiftsByType(shifts: Shift[]): ShiftGroup[] {
 
 /**
  * @param shift start and end times, and break times if split
- * @returns total minutes of the shift
- */
-export function calcShiftMinutes(shift: Shift): number {
-  const start = timeToMinutes(shift.startTime);
-  const end = timeToMinutes(shift.endTime);
-  let total = end - start;
-
-  // if it's a split shift, subtract the break time
-  if (shift.type === "split") {
-    const breakStartMn = timeToMinutes(shift.breakStart);
-    const breakEndMn = timeToMinutes(shift.breakEnd);
-    total -= breakEndMn - breakStartMn;
-  }
-
-  return total;
-}
-
-/**
- * @param shift start and end times, and break times if split
  * @returns minutes of the shift, split between am and pm
  */
 export function calcShiftAmPm(shift: Shift): HoursSummary {

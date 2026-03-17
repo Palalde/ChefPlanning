@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Modal, Button } from "@/components/ui";
 import {
-  calcShiftMinutes,
+  calcShiftAmPm,
   formatMinutesToDisplay,
   groupShiftsByType,
 } from "@/utils";
@@ -100,7 +100,7 @@ export default function ShiftManager({ onDeleteShift }) {
                         </span>
                         <span className="text-text-muted">•</span>
                         <span>
-                          {formatMinutesToDisplay(calcShiftMinutes(shift))}
+                          {formatMinutesToDisplay(calcShiftAmPm(shift).total)}
                         </span>
                         {shift.type === "split" && (
                           <>
