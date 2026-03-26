@@ -1,118 +1,79 @@
-Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+# 682. Baseball Game
 
-An input string is valid if:
+You are keeping the scores for a baseball game with strange rules. At the beginning of the game, you start with an empty record.
 
-Open brackets must be closed by the same type of brackets.
-Open brackets must be closed in the correct order.
-Every close bracket has a corresponding open bracket of the same type.
+You are given a list of strings operations, where operations[i] is the ith operation you must apply to the record and is one of the following:
+
+An integer x.
+Record a new score of x.
+'+'.
+Record a new score that is the sum of the previous two scores.
+'D'.
+Record a new score that is the double of the previous score.
+'C'.
+Invalidate the previous score, removing it from the record.
+Return the sum of all the scores on the record after applying all the operations.
+
+The test cases are generated such that the answer and all intermediate calculations fit in a 32-bit integer and that all operations are valid.
 
 Example 1:
 
-Input: s = "()"
-
-Output: true
-
+Input: ops = ["5","2","C","D","+"]
+Output: 30
+Explanation:
+"5" - Add 5 to the record, record is now [5].
+"2" - Add 2 to the record, record is now [5, 2].
+"C" - Invalidate and remove the previous score, record is now [5].
+"D" - Add 2 \* 5 = 10 to the record, record is now [5, 10].
+"+" - Add 5 + 10 = 15 to the record, record is now [5, 10, 15].
+The total sum is 5 + 10 + 15 = 30.
 Example 2:
 
-Input: s = "()[]{}"
-
-Output: true
-
+Input: ops = ["5","-2","4","C","D","9","+","+"]
+Output: 27
+Explanation:
+"5" - Add 5 to the record, record is now [5].
+"-2" - Add -2 to the record, record is now [5, -2].
+"4" - Add 4 to the record, record is now [5, -2, 4].
+"C" - Invalidate and remove the previous score, record is now [5, -2].
+"D" - Add 2 \* -2 = -4 to the record, record is now [5, -2, -4].
+"9" - Add 9 to the record, record is now [5, -2, -4, 9].
+"+" - Add -4 + 9 = 5 to the record, record is now [5, -2, -4, 9, 5].
+"+" - Add 9 + 5 = 14 to the record, record is now [5, -2, -4, 9, 5, 14].
+The total sum is 5 + -2 + -4 + 9 + 5 + 14 = 27.
 Example 3:
 
-Input: s = "(]"
-
-Output: false
-
-Example 4:
-
-Input: s = "([])"
-
-Output: true
-
-Example 5:
-
-Input: s = "([)]"
-
-Output: false
-
-Constraints:
-
-1 <= s.length <= 104
-s consists of parentheses only '()[]{}'.
+Input: ops = ["1","C"]
+Output: 0
+Explanation:
+"1" - Add 1 to the record, record is now [1].
+"C" - Invalidate and remove the previous score, record is now [].
+Since the record is empty, the total sum is 0.
 
 ```javaScript
 //solution 1
 /**
- * @param {string} s
- * @return {boolean}
+ * @param {string[]} operations
+ * @return {number}
  */
-var isValid = function (s) {
+var calPoints = function (operations) {
+    let stack = [];
 
-   const PCheck = new Map([
-        [")", "("],
-        ["}", "{"],
-        ["]", "["],
-    ]);
+    for (const op of operations) {
+        let last = stack.at(-1) ?? 0;
+        let prevLast = stack.at(-2) ?? 0;
 
-    let pStack = [];
-
-    for (let i = 0; i < s.length; i++) {
-
-        if (PCheck.has(s[i])) {
-
-            let val = pStack.pop();
-
-            if (val !== PCheck.get(s[i])) {
-                return false;
-            }
-            continue;
+        if (!isNaN(op)) {
+            stack.push(Number(op));
+        } else if (op === "C") {
+            stack.pop();
+        } else if (op === "D") {
+            stack.push(last * 2);
+        } else if (op === "+") {
+            stack.push(prevLast + last);
         }
-
-        pStack.push(s[i]);
     }
 
-    return true;
-};
-
-//solution 2
-
-/**
- * @param {string} s
- * @return {boolean}
- */
-var isValid = function (s) {
-
-    if (s.length % 2 !== 0) return false;
-
-    const PCheck = new Map([
-        [")", "("],
-        ["}", "{"],
-        ["]", "["],
-    ]);
-
-    let pStack = [];
-
-    for (let i = 0; i < s.length; i++) {
-
-        if (PCheck.has(s[i])) {
-
-            let val = pStack.pop();
-
-            if (val !== PCheck.get(s[i])) {
-                return false;
-            }
-            continue;
-        }
-
-        pStack.push(s[i]);
-    }
-
-    if (pStack.length) {
-        return false;
-    } else {
-        return true;
-    }
-
+    return stack.reduce((acc, s) => acc + s, 0);
 };
 ```

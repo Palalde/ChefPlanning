@@ -184,3 +184,16 @@ Rien à carder — exercice trop simple, aucun concept nouveau.
 | **Stack (LIFO)** — `push()` pour empiler, `pop()` pour dépiler le dernier, ordre inversé | ✅ Oui | Vrai gap : pensait qu'un stack = "juste un array où on accumule". LIFO + `pop()` comme opération centrale est fondamental. 10+ problèmes futurs. |
 | Map pour reverse lookup (closer → opener)                                                | ❌ Non | Déjà couvert (Map/Set cards). Utilisation créative, pas concept nouveau.                                                                         |
 | Edge cases (longueur impaire, stack non vide à la fin)                                   | ❌ Non | Bug fixes ponctuels. Réflexe qui vient avec la pratique.                                                                                         |
+
+---
+
+## 682. Baseball Game
+
+| Apprentissage                                        | Card ? | Pourquoi                                                                                    |
+| ---------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------- |
+| **`.at(-1)` — accès index négatif**                  | ✅ Oui | Vrai gap : ne connaissait pas. Remplace `arr[arr.length-1]`, réutilisable partout           |
+| **`??` (nullish coalescing) vs `\|\|` (logical OR)** | ✅ Oui | Piège classique. `\|\|` écrase `0`, `''`, `false`. Gap avoué ("du mal à comprendre `\|\|`") |
+| **`isNaN()` vs `Number.isNaN()` (+ isFinite)**       | ✅ Oui | Conversion implicite vs stricte. ChatGPT a trompé = preuve du gap. isFinite même pattern    |
+| `isFinite()` seul séparément                         | ❌ Non | Même pattern que isNaN, couvert dans la card ci-dessus                                      |
+| ChatGPT hallucine sur isNaN                          | ❌ Non | Leçon d'expérience, pas un fait mémorisable                                                 |
+| Stack (push/pop/at)                                  | ❌ Non | Déjà couvert (card Stack LIFO — Valid Parentheses)                                          |
