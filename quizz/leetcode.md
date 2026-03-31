@@ -129,4 +129,33 @@ var topKFrequent = function (nums, k) {
         }
     }
 };
+
+// solution 4
+
+var topKFrequent = function (nums, k) {
+  let freqMap = new Map();
+  let checkMap = new Map();
+  let result = [];
+
+  for (const n of nums) {
+    freqMap.set(n, (freqMap.get(n) || 0) + 1);
+  }
+
+  for (const [val, freq] of freqMap) {
+    if (!checkMap.has(freq)) {
+      checkMap.set(freq, [val]);
+    } else {
+      checkMap.get(freq).push(val);
+    }
+  }
+
+  // Parcourir de la freq max (nums.length) vers 1
+  for (let freq = nums.length; freq >= 1 && result.length < k; freq--) {
+    if (checkMap.has(freq)) {
+      result.push(...checkMap.get(freq));
+    }
+  }
+
+  return result;
+};
 ```
