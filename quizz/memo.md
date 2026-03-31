@@ -231,3 +231,17 @@ Rien à carder — exercice trop simple, aucun concept nouveau.
 | `Array.from({ length: n }, () => [])` pour buckets                           | ❌ Non | Syntaxe trouvable, écrite correctement après avoir vu l'approche                                                 |
 | Math.max(...keys) pas adapté pour top K                                      | ❌ Non | Leçon de design, pas un concept mémorisable                                                                      |
 | Être proche mais pas trouver le bucket                                       | ❌ Non | Process/frustration, pas technique                                                                               |
+
+---
+
+## 739. Daily Temperatures
+
+| Apprentissage                                                                                  | Card ? | Pourquoi                                                                                                                           |
+| ---------------------------------------------------------------------------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| **Monotone Stack** — maintenir une stack triée en poppant les éléments qui violent l'invariant | ✅ Oui | Pattern réutilisable 10+ problèmes (Next Greater/Smaller Element, Stock Span, Largest Rectangle). Pas codé seul malgré l'intuition |
+| Map pas adaptée comme stack (pas de `.at(-1)`, pas d'ordre)                                    | ❌ Non | Design choice, ancré après l'avoir testé — réalisé seul                                                                            |
+| Toujours lire le top dynamiquement (`stack.at(-1)`) au lieu d'une variable `value`             | ❌ Non | Leçon de débogage. `.at(-1)` déjà couvert (card Baseball Game)                                                                     |
+| `[value, index]` vs `{ value, index }` pour les paires                                         | ❌ Non | Destructuring déjà couvert, choix de style                                                                                         |
+| Forward vs backward traversal                                                                  | ❌ Non | Les 2 marchent, pas de bonne réponse universelle                                                                                   |
+| `i <= 0` au lieu de `i >= 0`                                                                   | ❌ Non | Typo/bug ponctuel                                                                                                                  |
+| Vérifier stack vide avant de lire le top                                                       | ❌ Non | Déjà couvert dans la card Stack LIFO                                                                                               |
