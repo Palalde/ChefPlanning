@@ -245,3 +245,36 @@ Rien à carder — exercice trop simple, aucun concept nouveau.
 | Forward vs backward traversal                                                                  | ❌ Non | Les 2 marchent, pas de bonne réponse universelle                                                                                   |
 | `i <= 0` au lieu de `i >= 0`                                                                   | ❌ Non | Typo/bug ponctuel                                                                                                                  |
 | Vérifier stack vide avant de lire le top                                                       | ❌ Non | Déjà couvert dans la card Stack LIFO                                                                                               |
+
+---
+
+## 125. Valid Palindrome
+
+| Apprentissage                                                            | Card ? | Pourquoi                                                                                                                                           |
+| ------------------------------------------------------------------------ | ------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Two Pointers (converging)** — `i` début, `j` fin, convergent au centre | ✅ Oui | Pattern nommé réutilisable (Two Sum II, 3Sum, Container With Most Water). Noté à créer sur Valid Palindrome depuis Two Sum. Distinct du Read/Write |
+| Regex pour filtrer une string                                            | ❌ Non | Google en 5 sec, syntaxe regex spécifique                                                                                                          |
+| `.toLowerCase()`                                                         | ❌ Non | Trop basique                                                                                                                                       |
+| Palindrome = vérifier les 2 bouts                                        | ❌ Non | Intuition naturelle, pas un concept                                                                                                                |
+
+---
+
+## 344. Reverse String
+
+| Apprentissage                                          | Card ? | Pourquoi                                                                                                                                       |
+| ------------------------------------------------------ | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.reverse()` existe sur les arrays                     | ❌ Non | Google en 5 sec, nom littéral. Oubli par focus algo                                                                                            |
+| Two Pointers converging pour reverse                   | ❌ Non | Déjà couvert (card Two Pointers — Valid Palindrome)                                                                                            |
+| **Destructuring swap** — `[s[i], s[j]] = [s[j], s[i]]` | ✅ Oui | Pattern utile, remplace variable temporaire. Vrai gap : ne savait pas que c'était possible. Réutilisable partout (two pointers, sort, shuffle) |
+
+---
+
+## 680. Valid Palindrome II
+
+| Apprentissage                                                 | Card ? | Pourquoi                                                                      |
+| ------------------------------------------------------------- | ------ | ----------------------------------------------------------------------------- |
+| Approche pair/impair — dead-end, pas de relation              | ❌ Non | Leçon d'expérience, pas un concept                                            |
+| Greedy `s[i] !== s[j-1]` échoue sur "eceec"                   | ❌ Non | Leçon spécifique, découvert seul                                              |
+| Au mismatch, explorer les 2 possibilités (skip left OU right) | ❌ Non | Trouvé seul. Intuition correcte, juste résisté par perfectionnisme            |
+| Helper `isPalindrome(s, l, r)` + `\|\|` au lieu de flag/save  | ❌ Non | Style de code plus propre, pas un concept nouveau. Viendra avec la pratique   |
+| `[i, j] = save` au lieu de `[iS, jS] = save; i = iS; j = jS`  | ❌ Non | Déjà couvert par la card destructuring swap. Réflexe à ancrer par la pratique |
