@@ -278,3 +278,9 @@ Rien à carder — exercice trop simple, aucun concept nouveau.
 | Au mismatch, explorer les 2 possibilités (skip left OU right) | ❌ Non | Trouvé seul. Intuition correcte, juste résisté par perfectionnisme            |
 | Helper `isPalindrome(s, l, r)` + `\|\|` au lieu de flag/save  | ❌ Non | Style de code plus propre, pas un concept nouveau. Viendra avec la pratique   |
 | `[i, j] = save` au lieu de `[iS, jS] = save; i = iS; j = jS`  | ❌ Non | Déjà couvert par la card destructuring swap. Réflexe à ancrer par la pratique |
+
+---
+
+## 1768. Merge Strings Alternately
+
+Rien à carder — exercice simple, aucun concept nouveau. Two pointers parallèles, application directe.
