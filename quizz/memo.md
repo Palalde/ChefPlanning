@@ -284,3 +284,13 @@ Rien à carder — exercice trop simple, aucun concept nouveau.
 ## 1768. Merge Strings Alternately
 
 Rien à carder — exercice simple, aucun concept nouveau. Two pointers parallèles, application directe.
+
+---
+
+## 88. Merge Sorted Array
+
+| Apprentissage                                                | Card ? | Pourquoi                                                            |
+| ------------------------------------------------------------ | ------ | ------------------------------------------------------------------- |
+| In-place merge : remplir par la fin pour éviter l'écrasement | ❌ Non | Leçon d'expérience — spécifique au merge in-place, peu réutilisable |
+| 3 pointeurs (2 read + 1 write)                               | ❌ Non | Déjà couvert par Read/Write Pointer (card existante)                |
+| Réutiliser `m`/`n` directement au lieu de créer `i`/`j`      | ❌ Non | Style/optimisation — viendra avec la pratique                       |

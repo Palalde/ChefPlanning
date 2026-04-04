@@ -1,60 +1,69 @@
-valid palindrome II
+merged sorted array
 
 ```javaScript
 
 //solution 1
-/**
- * @param {string} word1
- * @param {string} word2
- * @return {string}
- */
-var mergeAlternately = function (word1, word2) {
-
-    let i = 0;
-    let j = 0;
-    const end = Math.max(word1.length - 1, word2.length - 1);
-    let result = "";
-
-    while (j <= end || i <= end) {
-        if (word1[i] !== undefined) {
-            result += word1[i];
-            i++;
-        }
-
-        if (word2[j] !== undefined) {
-            result += word2[j];
-            j++;
-        }
-    }
-
-    return result;
-};
-
+* @param {number[]} nums1 * @param {number} m * @param {number[]} nums2 * @param {number} n * @return {void} Do not return anything, modify nums1 in-place instead. */ var merge = function (nums1, m, nums2, n) { let i = 0; let j = 0; while (i <= m && j <= n ) { if (nums1[i] && nums2[j]) { if (nums1[i] <= nums2[j]) { i++; } else { [nums1[i], nums1[i + 1] ] = [nums2[j], nums1[i]]; i++; j++; }; } else { if (nums1[i]) { i++; } else { nums1[i] = nums2[j]; i++; j++; } } } };
 //solution 2
 
 /**
- * @param {string} word1
- * @param {string} word2
- * @return {string}
+ * @param {number[]} nums1
+ * @param {number} m
+ * @param {number[]} nums2
+ * @param {number} n
+ * @return {void} Do not return anything, modify nums1 in-place instead.
  */
-var mergeAlternately = function (word1, word2) {
+var merge = function (nums1, m, nums2, n) {
+    let i = m - 1;
+    let j = n - 1;
+    let k = (m + n) - 1;
 
-    let i = 0;
-    let j = 0;
-    let result = "";
-
-    while (i < word1.length  || j < word2.length ) {
-        if (i < word1.length) {
-            result += word1[i];
-            i++;
-        }
-
-        if ( j < word2.length) {
-            result += word2[j];
-            j++;
+    while (i >= 0 && j >= 0) {
+        if (nums1[i] > nums2[j]) {
+            nums1[k] = nums1[i];
+            i--;
+            k--;
+        } else {
+            nums1[k] = nums2[j];
+            j--;
+            k--;
         }
     }
 
-    return result;
+    while (j >= 0) {
+        nums1[k] = nums2[j];
+        j--;
+        k--;
+    }
 };
+
+// solution attendue
+
+class Solution {
+    /**
+     * @param {number[]} nums1
+     * @param {number} m
+     * @param {number[]} nums2
+     * @param {number} n
+     * @return {void} Do not return anything, modify nums1 in-place instead.
+     */
+    merge(nums1, m, nums2, n) {
+        let last = m + n - 1;
+
+        // Merge in reverse order
+        while (m > 0 && n > 0) {
+            if (nums1[m - 1] > nums2[n - 1]) {
+                nums1[last--] = nums1[m-- - 1];
+            } else {
+                nums1[last--] = nums2[n-- - 1];
+            }
+        }
+
+        // Fill nums1 with leftover nums2 elements
+        while (n > 0) {
+            nums1[last--] = nums2[n-- - 1];
+        }
+    }
+}
+
 ```
