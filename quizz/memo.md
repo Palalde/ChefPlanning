@@ -294,3 +294,13 @@ Rien à carder — exercice simple, aucun concept nouveau. Two pointers parallè
 | In-place merge : remplir par la fin pour éviter l'écrasement | ❌ Non | Leçon d'expérience — spécifique au merge in-place, peu réutilisable |
 | 3 pointeurs (2 read + 1 write)                               | ❌ Non | Déjà couvert par Read/Write Pointer (card existante)                |
 | Réutiliser `m`/`n` directement au lieu de créer `i`/`j`      | ❌ Non | Style/optimisation — viendra avec la pratique                       |
+
+---
+
+## 26. Remove Duplicates from Sorted Array
+
+| Apprentissage                           | Card ? | Pourquoi                                                      |
+| --------------------------------------- | ------ | ------------------------------------------------------------- |
+| Read/Write pointer (`j` écrit, `i` lit) | ❌ Non | Déjà couvert (card existante depuis #27). Application directe |
+| `k` et `j` redondants (toujours égaux)  | ❌ Non | Observation de style, pas un concept                          |
+| Vérifier les edge cases sur papier      | ❌ Non | Bonne habitude de process, pas mémorisable                    |
