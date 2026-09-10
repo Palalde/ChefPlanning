@@ -4,7 +4,7 @@ Weekly shift planning for small retail teams — built with and for a department
 
 **Live:** https://CHEFPLANNING-URL.vercel.app · **Status:** MVP in active development (TypeScript migration in progress)
 
-![ChefPlanning — weekly grid](docs/screenshot.png)
+![ChefPlanning — weekly grid](screenshot.png)
 
 ## The problem
 
