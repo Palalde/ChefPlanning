@@ -2,7 +2,7 @@ import { useTheme } from "@/hooks";
 import { Button } from "@/components/ui";
 
 export default function ThemeToggle() {
-  const { theme, toggleTheme } = useTheme();
+  const { isDark, toggleTheme } = useTheme();
 
   return (
     <Button
@@ -11,7 +11,7 @@ export default function ThemeToggle() {
       size="icon"
       aria-label="Toggle theme"
     >
-      {theme === "light" ? "🌞" : "🌜"}
+      {isDark ? "🌜" : "🌞"}
     </Button>
   );
 }
