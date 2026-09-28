@@ -53,6 +53,12 @@ export default function useAssignments(shifts = [], currentWeek = "") {
         (a) => a.id === assignmentData.id,
       );
 
+      // guard: si l'assignation actuelle n'existe pas, ne rien faire
+      if (!currentAssignment) {
+        console.warn("Assignment not found");
+        return;
+      }
+
       // Si même shift qu'avant → ne rien faire
       if (assignmentData.shiftId === currentAssignment.shiftId) return;
 
