@@ -5,7 +5,7 @@ import { DAYS_OF_WEEK } from "@/constants";
 import { EmployeeRow } from "@/features/planning";
 import { useAppContext } from "@/context/AppContext";
 
-function PlanningTable({ onCellClick }) {
+function PlanningTable({ onCellClick, setIsShiftModOpen }) {
   // context
   const { employees } = useAppContext();
 
@@ -49,6 +49,7 @@ function PlanningTable({ onCellClick }) {
                   key={employee.id}
                   employee={employee}
                   onCellClick={onCellClick}
+                  setIsShiftModOpen={setIsShiftModOpen}
                 />
               ))
             ) : (

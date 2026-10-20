@@ -81,7 +81,10 @@ function App() {
           </div>
 
           {/* Tableau pleine largeur */}
-          <PlanningTable onCellClick={handleCellClick} />
+          <PlanningTable
+            setIsShiftModOpen={setIsShiftModOpen}
+            onCellClick={handleCellClick}
+          />
 
           {/* TOUT LES MODALS */}
           {/* Modal CRUD employés */}

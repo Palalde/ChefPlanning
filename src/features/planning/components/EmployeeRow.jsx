@@ -7,7 +7,7 @@ import { formatMinutesToDisplay } from "@/utils";
 import PlanningCell from "./PlanningCell";
 import { useAppContext } from "@/context/AppContext";
 
-function EmployeeRow({ employee, onCellClick }) {
+function EmployeeRow({ employee, onCellClick, setIsShiftModOpen }) {
   // context
   const { assignments, addAssignment, shifts } = useAppContext();
   // assignations de l'employé
@@ -64,6 +64,8 @@ function EmployeeRow({ employee, onCellClick }) {
                     day: day.id,
                     shiftId: defaultShift.id,
                   });
+                } else {
+                  setIsShiftModOpen(true);
                 }
               } else {
                 // si case pleine mode edition
