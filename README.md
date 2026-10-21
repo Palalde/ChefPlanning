@@ -2,7 +2,7 @@
 
 Weekly shift planning for small retail teams — built for a department manager who was spending 3–4 hours a week on an Excel schedule.
 
-**Status:** MVP in active development (TypeScript migration in progress)
+**Status:** MVP in active development (TypeScript migration in progress) · **Live:** https://chef-planning.vercel.app/
 
 ![ChefPlanning — weekly grid](screenshot.png)
 
@@ -44,6 +44,7 @@ npm install
 npm run dev      # http://localhost:5173
 npm run build    # production build
 npm run lint
+npm run typecheck  # tsc --noEmit (Vite does not type-check)
 ```
 
 ## Author
