@@ -2,7 +2,7 @@
 
 Weekly shift planning for small retail teams — built with and for a department manager who was spending 3–4 hours a week on an Excel schedule.
 
-**Live:** https://CHEFPLANNING-URL.vercel.app · **Status:** MVP in active development (TypeScript migration in progress)
+**Live:** https://chef-planning.vercel.app/ · **Status:** MVP in active development (TypeScript migration in progress)
 
 ![ChefPlanning — weekly grid](screenshot.png)
 
