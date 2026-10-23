@@ -7,3 +7,9 @@ export {
   formatMinutesToDisplay,
 } from "./timeUtils";
 export { calcShiftAmPm, groupShiftsByType } from "./shiftUtils";
+export {
+  formatLocalIso,
+  getMondayISO,
+  parseLocalIso,
+  addWeeks,
+} from "./dateUtils";
