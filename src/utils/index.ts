@@ -15,4 +15,6 @@ export {
   isToday,
   isPast,
   addWeeks,
+  getISOWeekNumber,
+  formatWeekLabel,
 } from "./dateUtils";

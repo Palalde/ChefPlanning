@@ -48,3 +48,38 @@ export function isPast(iso: ISODateString): boolean {
   const today = formatLocalIso(new Date());
   return iso < today;
 }
+
+// get the ISO week number for a given ISO date string
+export function getISOWeekNumber(iso: ISODateString): number {
+  const date = parseLocalIso(iso);
+  const thursday = new Date(date);
+  thursday.setDate(date.getDate() + (4 - (date.getDay() || 7)));
+  const yearStart = new Date(thursday.getFullYear(), 0, 1);
+
+  const MS_PER_DAY = 86400000;
+  const weekNo = Math.ceil(
+    ((thursday.getTime() - yearStart.getTime()) / MS_PER_DAY + 1) / 7,
+  );
+  return weekNo;
+}
+
+// format a week label for a given ISO date string representing the start of the week
+export function formatWeekLabel(weekOf: ISODateString): string {
+  const startDate = parseLocalIso(weekOf);
+  const endDate = new Date(startDate);
+  endDate.setDate(startDate.getDate() + 6);
+  const sameMonth = startDate.getMonth() === endDate.getMonth();
+
+  const weekNumber = getISOWeekNumber(weekOf);
+  const formatter = new Intl.DateTimeFormat("fr-FR", {
+    day: "numeric",
+    month: "short",
+  });
+
+  const startLabel = sameMonth
+    ? startDate.getDate().toString()
+    : formatter.format(startDate);
+  const endLabel = formatter.format(endDate);
+
+  return `Sem. ${weekNumber} · ${startLabel}–${endLabel}`;
+}
