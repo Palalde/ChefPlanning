@@ -22,12 +22,29 @@ export function parseLocalIso(isoString: ISODateString): Date {
   return new Date(year, month - 1, day);
 }
 
+// add a number of days to an ISO date string and return the new ISO date string
+export function addDays(iso: ISODateString, days: number): ISODateString {
+  const date = parseLocalIso(iso);
+  date.setDate(date.getDate() + days);
+  return formatLocalIso(date);
+}
+
 // add a number of weeks to an ISO date string and return the new ISO date string
 export function addWeeks(
   isoString: ISODateString,
   weeks: number,
 ): ISODateString {
-  const date = parseLocalIso(isoString);
-  date.setDate(date.getDate() + weeks * 7);
-  return formatLocalIso(date);
+  return addDays(isoString, weeks * 7);
+}
+
+// check if an ISO date string represents today's date
+export function isToday(iso: ISODateString): boolean {
+  const today = formatLocalIso(new Date());
+  return iso === today;
+}
+
+// check if an ISO date string represents a past date
+export function isPast(iso: ISODateString): boolean {
+  const today = formatLocalIso(new Date());
+  return iso < today;
 }

@@ -11,5 +11,8 @@ export {
   formatLocalIso,
   getMondayISO,
   parseLocalIso,
+  addDays,
+  isToday,
+  isPast,
   addWeeks,
 } from "./dateUtils";
