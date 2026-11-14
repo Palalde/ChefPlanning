@@ -1,13 +1,13 @@
 // 🎯 Task 9.1.2 : EmployeeRow — Ligne employé avec sous-lignes AM/PM
 // 🎨 Styling Tailwind = Mentor | ⚛️ Logique React = Paul
 
-import { DAYS_OF_WEEK } from "@/constants";
+import { DAYS_OF_WEEK, SHIFT_TYPE_CONFIG } from "@/constants";
 import { getEmployeeHours } from "@/features/employees";
-import { formatMinutesToDisplay } from "@/utils";
+import { formatMinutesToDisplay, parseLocalIso } from "@/utils";
 import PlanningCell from "./PlanningCell";
 import { useAppContext } from "@/context/AppContext";
 
-function EmployeeRow({ employee, onCellClick, setIsShiftModOpen }) {
+function EmployeeRow({ employee, onCellClick, setIsShiftModOpen, weekDates }) {
   // context
   const { assignments, addAssignment, shifts } = useAppContext();
   // assignations de l'employé
@@ -27,7 +27,11 @@ function EmployeeRow({ employee, onCellClick, setIsShiftModOpen }) {
   //fonction pour les cellules aprem ou matin
   const renderDayCells = (period) => {
     // parcourir les jours de la semaine pour cette ligne (AM ou PM)
-    return DAYS_OF_WEEK.map((day) => {
+    return DAYS_OF_WEEK.map((day, index) => {
+      // start of the aria-label ("Marie, mardi 13, matin"); the cell adds its state
+      const dayNumber = parseLocalIso(weekDates[index]).getDate();
+      const periodLabel = SHIFT_TYPE_CONFIG[period].label.toLowerCase();
+      const cellContext = `${employee.name}, ${day.name.toLowerCase()} ${dayNumber}, ${periodLabel}`;
       // assignation pour ce jour + period
       // On matche les shifts du même type que la period (am/pm)
       // + les shifts multi-ligne (full/split) qui occupent AM et PM
@@ -54,6 +58,7 @@ function EmployeeRow({ employee, onCellClick, setIsShiftModOpen }) {
             assignment={dailyAssignment}
             shift={shift}
             period={period}
+            cellContext={cellContext}
             onClick={() => {
               if (!dailyAssignment) {
                 // ajouter un assignment si case vide (guard: shift doit exister)

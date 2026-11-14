@@ -67,6 +67,7 @@ function PlanningTable({ onCellClick, setIsShiftModOpen }) {
                   employee={employee}
                   onCellClick={onCellClick}
                   setIsShiftModOpen={setIsShiftModOpen}
+                  weekDates={weekDates}
                 />
               ))
             ) : (

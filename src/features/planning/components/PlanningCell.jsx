@@ -3,7 +3,31 @@
 
 import { SHIFT_TYPE_CONFIG } from "@/constants";
 
-function PlanningCell({ assignment, shift, period, onClick }) {
+// Full description of a shift (screen readers): name and hours, both ranges if split
+function describeShift(shift) {
+  return shift.type === "split"
+    ? `${shift.name}, matin ${shift.startTime}-${shift.breakStart}, après-midi ${shift.breakEnd}-${shift.endTime}`
+    : `${shift.name}, ${shift.startTime}-${shift.endTime}`;
+}
+
+// Text displayed in a cell: a full/split shift is shown half per row (AM/PM)
+function getCellLabel(shift, isAM) {
+  if (!shift) return "";
+
+  if (shift.type === "full") {
+    return isAM ? shift.startTime : shift.endTime;
+  }
+
+  if (shift.type === "split") {
+    return isAM
+      ? `${shift.startTime} - ${shift.breakStart}`
+      : `${shift.breakEnd} - ${shift.endTime}`;
+  }
+
+  return `${shift.startTime} - ${shift.endTime}`;
+}
+
+function PlanningCell({ assignment, shift, period, onClick, cellContext }) {
   // Cellule vide → zone cliquable
   if (!assignment) {
     return (
@@ -14,7 +38,7 @@ function PlanningCell({ assignment, shift, period, onClick }) {
           flex items-center justify-center"
         role="button"
         tabIndex={0}
-        aria-label={`Assigner un shift`}
+        aria-label={`${cellContext}, shift: vide`}
         onKeyDown={(e) => e.key === "Enter" && onClick?.()}
       >
         <span className="text-text-muted/0 hover:text-text-muted/40 text-lg transition-colors">
@@ -39,26 +63,6 @@ function PlanningCell({ assignment, shift, period, onClick }) {
   // Couleur dérivée du type (plus de colorClass stockée)
   const colorClass = SHIFT_TYPE_CONFIG[shift?.type].colorClass;
 
-  // Texte affiché dans la cellule selon le type
-  const getCellLabel = () => {
-    if (!shift) return "";
-
-    if (shift.type === "full") {
-      // Journée → AM affiche startTime, PM affiche endTime
-      return isAM ? shift.startTime : shift.endTime;
-    }
-
-    if (shift.type === "split") {
-      // Coupé → AM affiche start-breakStart, PM affiche breakEnd-end
-      return isAM
-        ? `${shift.startTime} - ${shift.breakStart}`
-        : `${shift.breakEnd} - ${shift.endTime}`;
-    }
-
-    // Matin / Après-midi → affiche start - end
-    return `${shift.startTime} - ${shift.endTime}`;
-  };
-
   return (
     <div
       onClick={onClick}
@@ -69,11 +73,11 @@ function PlanningCell({ assignment, shift, period, onClick }) {
         flex items-center justify-center`}
       role="button"
       tabIndex={0}
-      aria-label={`${shift?.name} — cliquer pour modifier`}
+      aria-label={`${cellContext}, shift: ${describeShift(shift)}`}
       onKeyDown={(e) => e.key === "Enter" && onClick?.()}
     >
       <span className="text-xs font-medium text-text-primary truncate px-1">
-        {getCellLabel()}
+        {getCellLabel(shift, isAM)}
       </span>
     </div>
   );
