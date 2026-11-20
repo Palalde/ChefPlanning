@@ -4,3 +4,4 @@ export { default as EmployeeForm } from "./components/EmployeeForm";
 export { default as useEmployees } from "./hooks/useEmployees";
 export { default as getAvailableColor } from "./utils/employeeColorUtils";
 export { getEmployeeHours } from "./utils/employeeHours";
+export { getFirstName } from "./utils/employeeName";
