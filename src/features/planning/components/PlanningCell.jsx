@@ -27,24 +27,27 @@ function getCellLabel(shift, isAM) {
   return `${shift.startTime} - ${shift.endTime}`;
 }
 
+// Whole cell (44px high) is the touch target; the visual block sits inside with a small inset
+const cellButtonClass =
+  "group block h-11 w-full cursor-pointer rounded p-1 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent";
+
 function PlanningCell({ assignment, shift, period, onClick, cellContext }) {
-  // Cellule vide → zone cliquable
+  // Cellule vide → zone cliquable, « + » discret toujours visible
   if (!assignment) {
     return (
-      <div
+      <button
+        type="button"
         onClick={onClick}
-        className="w-full h-full min-h-9 rounded cursor-pointer
-          hover:bg-bg-secondary/50 transition-colors
-          flex items-center justify-center"
-        role="button"
-        tabIndex={0}
+        className={cellButtonClass}
         aria-label={`${cellContext}, shift: vide`}
-        onKeyDown={(e) => e.key === "Enter" && onClick?.()}
       >
-        <span className="text-text-muted/0 hover:text-text-muted/40 text-lg transition-colors">
+        <span
+          aria-hidden="true"
+          className="flex h-full w-full items-center justify-center rounded text-lg text-text-muted/50 transition-colors group-hover:bg-bg-secondary group-hover:text-text-secondary"
+        >
           +
         </span>
-      </div>
+      </button>
     );
   }
 
@@ -64,22 +67,21 @@ function PlanningCell({ assignment, shift, period, onClick, cellContext }) {
   const colorClass = SHIFT_TYPE_CONFIG[shift?.type].colorClass;
 
   return (
-    <div
+    <button
+      type="button"
       onClick={onClick}
-      className={`w-full h-full min-h-9 ${multiLineClasses} border cursor-pointer
-        ${colorClass}
-        hover:shadow-md hover:brightness-95 active:scale-[0.97]
-        transition-all duration-200
-        flex items-center justify-center`}
-      role="button"
-      tabIndex={0}
+      className={cellButtonClass}
       aria-label={`${cellContext}, shift: ${describeShift(shift)}`}
-      onKeyDown={(e) => e.key === "Enter" && onClick?.()}
     >
-      <span className="text-xs font-medium text-text-primary truncate px-1">
-        {getCellLabel(shift, isAM)}
+      <span
+        className={`flex h-full w-full items-center justify-center border ${multiLineClasses} ${colorClass}
+          transition-all duration-200 group-hover:shadow-md group-hover:brightness-95 group-active:scale-[0.97]`}
+      >
+        <span className="text-xs font-medium text-text-primary truncate px-1">
+          {getCellLabel(shift, isAM)}
+        </span>
       </span>
-    </div>
+    </button>
   );
 }
 

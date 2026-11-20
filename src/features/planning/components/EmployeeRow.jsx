@@ -51,7 +51,7 @@ function EmployeeRow({ employee, onCellClick, setIsShiftModOpen, weekDates }) {
       return (
         <td
           key={`${employee.id}-${day.id}-${period}`}
-          className="border-r border-border/50 last:border-r-0 p-1 h-11 align-middle"
+          className="border-r border-border/50 last:border-r-0 p-0 h-11 align-middle"
         >
           <PlanningCell
             assignment={dailyAssignment}
@@ -85,11 +85,15 @@ function EmployeeRow({ employee, onCellClick, setIsShiftModOpen, weekDates }) {
     <>
       {/* ── Ligne AM (Matin) ── */}
       <tr className="border-b border-border/50 group/row">
-        {/* Cellule employé — rowSpan 2 (AM + PM), sticky à gauche */}
+        {/* Cellule employé — rowSpan 2 (AM + PM), sticky à gauche.
+            Opaque base + employee tint as a gradient layer: a translucent background
+            would let the day cells show through while scrolling under it */}
         <td
           rowSpan={2}
-          className="sticky left-0 z-10 border-r border-border p-0 align-stretch transition-colors"
-          style={{ backgroundColor: `${employee.color}08` }}
+          className="sticky left-0 z-20 bg-bg-primary p-0 align-stretch shadow-[inset_-1px_-1px_0_var(--color-border)]"
+          style={{
+            backgroundImage: `linear-gradient(${employee.color}08, ${employee.color}08)`,
+          }}
         >
           {/* Fixed 96px on phone so long names truncate instead of widening the column */}
           <div className="flex h-full w-24 sm:w-auto">

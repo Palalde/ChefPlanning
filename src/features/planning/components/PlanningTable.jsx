@@ -13,14 +13,16 @@ function PlanningTable({ onCellClick, setIsShiftModOpen }) {
   const weekDates = DAYS_OF_WEEK.map((_, index) => addDays(currentWeek, index));
   return (
     <div className="bg-bg-primary rounded-xl shadow-md border border-border overflow-hidden">
-      {/* Wrapper scroll horizontal */}
-      <div className="overflow-x-auto">
+      {/* Scroll container on both axes (so the header can stick to its top), snapping day by day.
+          scroll-pl = sticky column width, so a snapped day is never hidden under it */}
+      <div className="max-h-[70dvh] overflow-auto snap-x snap-mandatory scroll-pl-24 sm:scroll-pl-40">
+        {/* Sticky cells use inset shadows as borders: collapsed borders don't move with sticky cells */}
         <table className="w-full border-collapse min-w-175">
           {/* En-tête : colonne Employé + 7 jours */}
           <thead>
-            <tr className="bg-bg-tertiary border-b border-border">
-              {/* Colonne Employé — sticky à gauche */}
-              <th className="sticky left-0 z-20 w-24 bg-bg-tertiary text-left px-2 sm:w-auto sm:min-w-40 sm:px-4 py-3 border-r border-border">
+            <tr>
+              {/* Corner cell — sticky in both directions, above everything */}
+              <th className="sticky left-0 top-0 z-30 w-24 bg-bg-tertiary text-left px-2 sm:w-auto sm:min-w-40 sm:px-4 py-3 shadow-[inset_-1px_-1px_0_var(--color-border)]">
                 <span className="text-sm font-semibold text-text-secondary">
                   <span aria-hidden="true" className="hidden sm:inline">
                     👤{" "}
@@ -39,23 +41,25 @@ function PlanningTable({ onCellClick, setIsShiftModOpen }) {
                 return (
                   <th
                     key={day.id}
-                    className={`px-2 sm:px-3 py-2 text-center min-w-22.5 sm:min-w-27.5 border-r border-border last:border-r-0 ${
-                      past ? "opacity-60" : ""
-                    }`}
+                    className="sticky top-0 z-10 snap-start bg-bg-tertiary px-2 sm:px-3 py-2 text-center min-w-22.5 sm:min-w-27.5
+                      shadow-[inset_-1px_-1px_0_var(--color-border)] last:shadow-[inset_0_-1px_0_var(--color-border)]"
                   >
-                    <span className="text-sm font-semibold text-text-primary sm:hidden">
-                      {day.shortName}
-                    </span>
-                    <span className="text-sm font-semibold text-text-primary hidden sm:inline">
-                      {day.name}
-                    </span>
-                    <span
-                      className={`ml-1 inline-flex items-center justify-center min-w-6 h-6 px-1 rounded-full text-sm font-semibold ${
-                        today ? "bg-accent text-white" : "text-text-secondary"
-                      }`}
-                    >
-                      {dayOfMonth}
-                    </span>
+                    {/* Dimmed content only: an opaque background must stay opaque while sticky */}
+                    <div className={past ? "opacity-60" : ""}>
+                      <span className="text-sm font-semibold text-text-primary sm:hidden">
+                        {day.shortName}
+                      </span>
+                      <span className="text-sm font-semibold text-text-primary hidden sm:inline">
+                        {day.name}
+                      </span>
+                      <span
+                        className={`ml-1 inline-flex items-center justify-center min-w-6 h-6 px-1 rounded-full text-sm font-semibold ${
+                          today ? "bg-accent text-white" : "text-text-secondary"
+                        }`}
+                      >
+                        {dayOfMonth}
+                      </span>
+                    </div>
                   </th>
                 );
               })}
