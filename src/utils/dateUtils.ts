@@ -56,18 +56,18 @@ export function getISOWeekNumber(iso: ISODateString): number {
   thursday.setDate(date.getDate() + (4 - (date.getDay() || 7)));
   const yearStart = new Date(thursday.getFullYear(), 0, 1);
 
+  // Rounded: a DST change between Jan 1 and the Thursday makes the gap ±1h off whole days
   const MS_PER_DAY = 86400000;
-  const weekNo = Math.ceil(
-    ((thursday.getTime() - yearStart.getTime()) / MS_PER_DAY + 1) / 7,
+  const daysSinceYearStart = Math.round(
+    (thursday.getTime() - yearStart.getTime()) / MS_PER_DAY,
   );
-  return weekNo;
+  return Math.floor(daysSinceYearStart / 7) + 1;
 }
 
 // format a week label for a given ISO date string representing the start of the week
 export function formatWeekLabel(weekOf: ISODateString): string {
   const startDate = parseLocalIso(weekOf);
-  const endDate = new Date(startDate);
-  endDate.setDate(startDate.getDate() + 6);
+  const endDate = parseLocalIso(addDays(weekOf, 6));
   const sameMonth = startDate.getMonth() === endDate.getMonth();
 
   const weekNumber = getISOWeekNumber(weekOf);
