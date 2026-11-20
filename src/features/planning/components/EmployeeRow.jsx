@@ -2,7 +2,7 @@
 // 🎨 Styling Tailwind = Mentor | ⚛️ Logique React = Paul
 
 import { DAYS_OF_WEEK, SHIFT_TYPE_CONFIG } from "@/constants";
-import { getEmployeeHours } from "@/features/employees";
+import { getEmployeeHours, getFirstName } from "@/features/employees";
 import { formatMinutesToDisplay, parseLocalIso } from "@/utils";
 import PlanningCell from "./PlanningCell";
 import { useAppContext } from "@/context/AppContext";
@@ -15,11 +15,10 @@ function EmployeeRow({ employee, onCellClick, setIsShiftModOpen, weekDates }) {
     (a) => a.employeeId === employee.id,
   );
   // Calcul des heures (total, AM, PM) via utilitaire centralisé
-  const {
-    total: totalMinutes,
-    am: amMinutes,
-    pm: pmMinutes,
-  } = getEmployeeHours(employeeAssignments, shifts);
+  const { total: totalMinutes } = getEmployeeHours(
+    employeeAssignments,
+    shifts,
+  );
   const isOvertime = totalMinutes > employee.weeklyMinutes;
   // Types de shifts qui occupent AM + PM (apparaissent sur les deux lignes)
   const multiLineTypes = ["full", "split"];
@@ -92,49 +91,43 @@ function EmployeeRow({ employee, onCellClick, setIsShiftModOpen, weekDates }) {
           className="sticky left-0 z-10 border-r border-border p-0 align-stretch transition-colors"
           style={{ backgroundColor: `${employee.color}08` }}
         >
-          <div className="flex h-full">
+          {/* Fixed 96px on phone so long names truncate instead of widening the column */}
+          <div className="flex h-full w-24 sm:w-auto">
             {/* Barre latérale couleur employé */}
             <div
               className="w-1 shrink-0 rounded-l-sm"
               style={{ backgroundColor: employee.color }}
             />
             <div className="flex flex-col flex-1 min-w-0">
-              {/* ── Ligne AM : Nom + pastille |  total AM ── */}
-              <div className="flex items-center justify-between gap-2 px-3 sm:px-4 h-11 border-b border-border/30">
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="font-semibold text-sm text-text-primary truncate">
-                    {employee.name}
+              {/* ── Ligne AM : prénom (téléphone) / nom complet (PC) ── */}
+              <div className="flex items-center h-11 min-w-0 px-2 sm:px-4 border-b border-border/30">
+                <span
+                  className="font-semibold text-sm text-text-primary truncate"
+                  title={employee.name}
+                >
+                  <span className="sm:hidden">
+                    {getFirstName(employee.name)}
                   </span>
-                </div>
-                <div className="flex items-center gap-1.5 text-xs text-text-muted shrink-0">
-                  <span>☀️</span>
-                  <span>{formatMinutesToDisplay(amMinutes)}</span>
-                </div>
+                  <span className="hidden sm:inline">{employee.name}</span>
+                </span>
               </div>
 
-              {/* ── Ligne PM : Heures total/contrat | total PM ── */}
-              <div className="flex items-center justify-between gap-2 px-3 sm:px-4 h-11">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-xs text-text-muted">●</span>
+              {/* ── Ligne PM : heures total / contrat ── */}
+              <div className="flex items-center gap-1 h-11 min-w-0 px-2 sm:px-4">
+                <span
+                  className={`whitespace-nowrap tabular-nums text-[11px] sm:text-xs ${isOvertime ? "text-danger font-semibold" : "text-text-secondary"}`}
+                >
+                  {formatMinutesToDisplay(totalMinutes)} /{" "}
+                  {formatMinutesToDisplay(employee.weeklyMinutes)}
+                </span>
+                {isOvertime && (
                   <span
-                    className={`text-xs ${isOvertime ? "text-danger font-semibold" : "text-text-secondary"}`}
+                    className="shrink-0 text-[10px] text-danger sm:text-xs sm:bg-danger/10 sm:rounded-full sm:px-1.5 sm:py-0.5"
+                    title="Dépassement d'heures"
                   >
-                    {formatMinutesToDisplay(totalMinutes)} /{" "}
-                    {formatMinutesToDisplay(employee.weeklyMinutes)}
+                    ⚠️
                   </span>
-                  {isOvertime && (
-                    <span
-                      className="text-xs text-danger bg-danger/10 rounded-full px-1.5 py-0.5"
-                      title="Dépassement d'heures"
-                    >
-                      ⚠️
-                    </span>
-                  )}
-                </div>
-                <div className="flex items-center gap-1.5 text-xs text-text-muted shrink-0">
-                  <span>🌙</span>
-                  <span>{formatMinutesToDisplay(pmMinutes)}</span>
-                </div>
+                )}
               </div>
             </div>
           </div>

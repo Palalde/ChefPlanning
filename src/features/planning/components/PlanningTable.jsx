@@ -20,9 +20,12 @@ function PlanningTable({ onCellClick, setIsShiftModOpen }) {
           <thead>
             <tr className="bg-bg-tertiary border-b border-border">
               {/* Colonne Employé — sticky à gauche */}
-              <th className="sticky left-0 z-20 bg-bg-tertiary text-left px-3 sm:px-4 py-3 min-w-45 sm:min-w-55 border-r border-border">
+              <th className="sticky left-0 z-20 w-24 bg-bg-tertiary text-left px-2 sm:w-auto sm:min-w-40 sm:px-4 py-3 border-r border-border">
                 <span className="text-sm font-semibold text-text-secondary">
-                  👤 Employé
+                  <span aria-hidden="true" className="hidden sm:inline">
+                    👤{" "}
+                  </span>
+                  Employé
                 </span>
               </th>
 
